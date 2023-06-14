@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Vizilabda ALkalmazás</title>
+  </head>
+  <body>
+    <nav>
+      <div class="left-nav">
+        <p>AUG 21., VASÁRNAP</p>
+        <h1 id="welcome">Szia, Berti!</h1>
+      </div>
+      <div class="right-nav">
+        <button type="submit">
+          <img
+            class="button-icon"
+            src="images/three-dot.png"
+            alt="Three Dot menu"
+          />
+        </button>
+      </div>
+    </nav>
+    <main>
+      <div class="all-time-stats">
+        <h2>Összesített statisztikák</h2>
+        <div class="all-time-stats-conatiner">
+          <div class="progress-bar-container">
+            <div class="progress-bar">
+              <p>75%</p>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-type">
+              <img
+                class="all-time-stat-icon"
+                src="images/simmingIcon.png"
+                alt="Swimming Icon"
+              />
+              <p class="stat-description blue">Úszás</p>
+            </div>
+            <div class="stat-data">
+              <p class="stat-number">12 321</p>
+              <p class="stat-unit">m</p>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-type">
+              <img
+                class="all-time-stat-icon"
+                src="images/runIcon.png"
+                alt="Run Icon"
+              />
+              <p class="stat-description green">Futás</p>
+            </div>
+            <div class="stat-data">
+              <p class="stat-number">12 321</p>
+              <p class="stat-unit">m</p>
+            </div>
+          </div>
+          <div class="stat">
+            <div class="stat-type">
+              <img
+                class="all-time-stat-icon"
+                src="images/trophyIcon.png"
+                alt="Trophy Icon"
+              />
+              <p class="stat-description yellow">Nap teljesítve</p>
+            </div>
+            <div class="stat-data">
+              <p class="stat-number">12 321</p>
+              <p class="stat-unit">m</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wourkouts">
+        <h2>Edzések</h2>
+        <div class="session-container">
+          <div class="session">
+            <h3>Jun 21, Kedd - Nap 2</h3>
+            <div class="session-stats">
+              <div class="session-stat">
+                <img
+                  class="session-stat-icon"
+                  src="images/simmingIcon.png"
+                  alt="swimming icon"
+                />
+                <p>2200m</p>
+              </div>
+              <div class="session-stat">
+                <img
+                  class="session-stat-icon"
+                  src="images/runIcon.png"
+                  alt="swimming icon"
+                />
+                <p>2200m</p>
+              </div>
+              <div class="session-stat">
+                <img
+                  class="session-stat-icon"
+                  src="images/trophyIcon.png"
+                  alt="swimming icon"
+                />
+                <p>2200m</p>
+              </div>
+            </div>
+            <div class="segment">
+              <div class="segment-left">
+                <img
+                  class="segment-icon blue-bg"
+                  src="images/simmingIcon.png"
+                  alt="swimming icon"
+                />
+                <div class="segment-info">
+                  <p class="segment-tpye">Úszás</p>
+                  <p class="segment-number blue">1200m</p>
+                </div>
+              </div>
+              <div class="segment-right">
+                <p class="time">8:30-9:30</p>
+                <img src="images/arrow.png" alt="arrow" />
+              </div>
+            </div>
+            <div class="segment">
+              <div class="segment-left">
+                <img
+                  class="segment-icon green-bg"
+                  src="images/runIcon.png"
+                  alt="running icon"
+                />
+                <div class="segment-info">
+                  <p class="segment-tpye">Futás</p>
+                  <p class="segment-number green">1200m</p>
+                </div>
+              </div>
+              <div class="segment-right">
+                <p class="time">8:30-9:30</p>
+                <img src="images/arrow.png" alt="arrow" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button id="floatingActionBtn" data-id="addWorkoutBtn">+</button>
+      <div id="add-workout" data-id="addWourkoutOverlay" class="hidden">
+        <div class="header-container">
+          <h2>Edzés hozzáadása</h2>
+          <button data-id="addWourkoutCloseBtn">
+            <img src="images/close.png" alt="x icon" />
+          </button>
+        </div>
+        <div class="add-workout-form">
+          <div id="workout-type-selector" class="form-item">
+            <p>Edzés típusa</p>
+            <div class="btn-choice">
+              <button class="blue" data-id="workoutTypeSwimmingBtn">
+                <img
+                  class="btn-icon"
+                  src="images/simmingIcon.png"
+                  alt="Swimming Icon"
+                />
+                <p>Úszás</p>
+              </button>
+              <button class="green" data-id="workoutTypeTerrainBtn">
+                <img class="btn-icon" src="images/runIcon.png" alt="Run Icon" />
+                <p>Szárazföldi</p>
+              </button>
+            </div>
+          </div>
+          <div
+            id="activty-type-selector"
+            class="form-item"
+            data-id="activtyTpyeSelectorContainer"
+          >
+            <p>Edzés fajta</p>
+            <div class="btn-choice">
+              <button class="green" data-id="activityTypeStrengthBtn">
+                <img
+                  class="btn-icon"
+                  src="images/dumbellIocn.png"
+                  alt="Szárazföldi"
+                />
+                <p>Szárazföldi</p>
+              </button>
+              <button class="green" data-id="activityTypeRunningBtn">
+                <img class="btn-icon" src="images/runIcon.png" alt="Run Icon" />
+                <p>Futás</p>
+              </button>
+            </div>
+          </div>
+          <div id="stat" class="form-item">
+            <p>Teljesítmény</p>
+            <div class="textbox-with-unit">
+              <input type="tel" name="stat" data-id="newWorkoutStatBox" />
+              <p>m</p>
+            </div>
+          </div>
+          <div id="time-date" class="form-item">
+            <p>Időpont</p>
+            <div class="multiple-textbox">
+              <input
+                type="date"
+                name="date"
+                id="date"
+                data-id="newWorkoutDateBox"
+              />
+              <div class="combined-textbox">
+                <input
+                  type="time"
+                  name="startTime"
+                  id="endTime"
+                  data-id="newWorkoutStartTimeBox"
+                />
+                <p>-</p>
+                <input
+                  type="time"
+                  name="endTime"
+                  id="endTime"
+                  data-id="newWorkoutEndTimeBox"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <button id="add-workout-btn" data-id="addInputedWorkoutBtn">
+          Hozzáadás
+        </button>
+      </div>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>
