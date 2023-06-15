@@ -13,7 +13,12 @@ const app = {
     newWorkoutStatBox: document.querySelector('[data-id="newWorkoutStatBox"]'),
     newWorkoutDateBox: document.querySelector('[data-id="newWorkoutDateBox"]'),
     newWorkoutStartTimeBox: document.querySelector('[data-id="newWorkoutStartTimeBox"]'),
-    newWorkoutEndTimeBox: document.querySelector('[data-id="newWorkoutEndTimeBox"]')
+    newWorkoutEndTimeBox: document.querySelector('[data-id="newWorkoutEndTimeBox"]'),
+    settingsOpenBtn: document.querySelector('[data-id="settingsOpenBtn"]'),
+    settingsModal: document.querySelector('[data-id="settingsModal"]'),
+    settingsModalCloseBtn: document.querySelector('[data-id="settingsModalCloseBtn"]'),
+    settingsImportDataBtn: document.querySelector('[data-id="settingsImportDataBtn"]'),
+    settingsExportDataBtn: document.querySelector('[data-id="settingsExportDataBtn"]')
 
 
   },
@@ -29,6 +34,24 @@ const app = {
     }
   },
   registerEventListener() {
+    //settings
+    app.$.settingsOpenBtn.addEventListener("click", (event) => {
+      app.$.settingsModal.classList.remove("hidden")
+    })
+
+    app.$.settingsModalCloseBtn.addEventListener("click", (event) => {
+      app.$.settingsModal.classList.add("hidden")
+    })
+
+    app.$.settingsImportDataBtn.addEventListener("click", (event) => {
+      importData()
+    })
+
+    app.$.settingsExportDataBtn.addEventListener("click", (event) => {
+      exportData()
+    })
+
+    // New workout
     app.$.openNewWorkoutBtn.addEventListener("click", (event) => {
       app.$.addWourkoutOverlay.classList.remove("hidden")
     })
@@ -131,7 +154,7 @@ function addSegment(segment) {
 
 function exportData() {
   console.log("Data export init")
-  copy(JSON.stringify(localStorage));
+  navigator.clipboard.writeText(JSON.stringify(localStorage));
 }
 
 function importData() {

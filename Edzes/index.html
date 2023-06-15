@@ -20,7 +20,7 @@
         <h1 id="welcome">Szia, Berti!</h1>
       </div>
       <div class="right-nav">
-        <button type="submit">
+        <button type="submit" data-id="settingsOpenBtn">
           <img
             class="button-icon"
             src="images/three-dot.png"
@@ -162,7 +162,7 @@
           <div id="workout-type-selector" class="form-item">
             <p>Edzés típusa</p>
             <div class="btn-choice">
-              <button class="blue" data-id="workoutTypeSwimmingBtn">
+              <button class="blue action-btn" data-id="workoutTypeSwimmingBtn">
                 <img
                   class="btn-icon"
                   src="images/simmingIcon.png"
@@ -170,7 +170,7 @@
                 />
                 <p>Úszás</p>
               </button>
-              <button class="green" data-id="workoutTypeTerrainBtn">
+              <button class="green action-btn" data-id="workoutTypeTerrainBtn">
                 <img class="btn-icon" src="images/runIcon.png" alt="Run Icon" />
                 <p>Szárazföldi</p>
               </button>
@@ -183,7 +183,10 @@
           >
             <p>Edzés fajta</p>
             <div class="btn-choice">
-              <button class="green" data-id="activityTypeStrengthBtn">
+              <button
+                class="green action-btn"
+                data-id="activityTypeStrengthBtn"
+              >
                 <img
                   class="btn-icon"
                   src="images/dumbellIocn.png"
@@ -191,7 +194,7 @@
                 />
                 <p>Szárazföldi</p>
               </button>
-              <button class="green" data-id="activityTypeRunningBtn">
+              <button class="green action-btn" data-id="activityTypeRunningBtn">
                 <img class="btn-icon" src="images/runIcon.png" alt="Run Icon" />
                 <p>Futás</p>
               </button>
@@ -234,6 +237,26 @@
         <button id="add-workout-btn" data-id="addInputedWorkoutBtn">
           Hozzáadás
         </button>
+      </div>
+      <div class="modal-background hidden" data-id="settingsModal">
+        <div class="modal-content">
+          <div class="header-container">
+            <h2>Beállítások</h2>
+            <button data-id="settingsModalCloseBtn">
+              <img src="images/close.png" alt="x icon" />
+            </button>
+          </div>
+          <div class="settings-options">
+            <p>Adatok importálása</p>
+            <button class="action-btn" data-id="settingsImportDataBtn">
+              Inport
+            </button>
+            <p>Adatok exportálása</p>
+            <button class="action-btn" data-id="settingsExportDataBtn">
+              Export
+            </button>
+          </div>
+        </div>
       </div>
     </main>
     <script src="script.js"></script>
