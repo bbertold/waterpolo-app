@@ -18,7 +18,8 @@ const app = {
     settingsModal: document.querySelector('[data-id="settingsModal"]'),
     settingsModalCloseBtn: document.querySelector('[data-id="settingsModalCloseBtn"]'),
     settingsImportDataBtn: document.querySelector('[data-id="settingsImportDataBtn"]'),
-    settingsExportDataBtn: document.querySelector('[data-id="settingsExportDataBtn"]')
+    settingsExportDataBtn: document.querySelector('[data-id="settingsExportDataBtn"]'),
+    sessionContainer: document.querySelector('[data-id="sessionContainer"]')
 
 
   },
@@ -27,10 +28,10 @@ const app = {
     console.log("App init started")
     this.registerEventListener()
     // Cheack if there is data stored in local storage
-    if (!hasData()) {
+    if (window.localStorage.length == 0) {
       initLocalStorage()
     } else {
-
+      loadData()
     }
   },
   registerEventListener() {
@@ -90,6 +91,7 @@ const app = {
       } else {
         newWorkout("texboxes")
         saveNewWorkout()
+        location.reload()
       }
     })
   },
@@ -130,21 +132,57 @@ function initLocalStorage() {
   app.$.sessionsContainer.insertAdjacentHTML("beforeend", htmlSegment)
 }
 
-function hasData() {
-  if (window.localStorage.length != 0) {
-    return true
-  } else {
-    return false
-  }
-}
-
 function loadData() {
-  let workout = JSON.parse(localStorage.getItem('workout'))
-  workout.forEach(session => addSession(session))
+  let workouts = JSON.parse(localStorage.getItem('workouts'))
+  console.log(workouts)
+  workouts.forEach(element => addSession(element))
 }
 
 function addSession(session) {
-  session.segment.forEach(segment => addSegment(segment))
+  let sessionHtml = ""
+  let dateOfSession = new Date(session.date)
+  dateOfSession = `${dateOfSession.getMonth()} ${dateOfSession.getDate()}, ${dateOfSession.getDay()}`
+  let allTheSegmentsHtml = ""
+  console.log(session)
+  session.segments.forEach((segment) => {
+    let segmentHtml = `
+    <div class="segment">
+              <div class="segment-left">
+                <img class="segment-icon blue-bg" src="images/simmingIcon.png" alt="swimming icon">
+                <div class="segment-info">
+                  <p class="segment-tpye">${segment.workoutType == "swimming" ? "Úszás" : "Szárazföld"}</p>
+                  <p class="segment-number blue">${segment.stat}</p>
+                </div>
+              </div>
+              <div class="segment-right">
+                <p class="time">${segment.startTime}-${segment.endTime}</p>
+                <img src="images/arrow.png" alt="arrow">
+              </div>
+            </div>`
+    allTheSegmentsHtml += segmentHtml
+  })
+
+  sessionHtml = `
+  <div class="session">
+  <h3>${dateOfSession}</h3>
+  <div class="session-stats">
+              <div class="session-stat">
+                <img class="session-stat-icon" src="images/simmingIcon.png" alt="swimming icon">
+                <p>NO DATA</p>
+              </div>
+              <div class="session-stat">
+                <img class="session-stat-icon" src="images/runIcon.png" alt="swimming icon">
+                <p>NO DATA</p>
+              </div>
+              <div class="session-stat">
+                <img class="session-stat-icon" src="images/trophyIcon.png" alt="swimming icon">
+                <p>NO DATA</p>
+              </div>
+            </div>
+  ${allTheSegmentsHtml}
+  </div>
+  `
+  app.$.sessionContainer.insertAdjacentHTML("afterbegin", sessionHtml)
 }
 
 function addSegment(segment) {
