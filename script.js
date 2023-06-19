@@ -134,59 +134,69 @@ function initLocalStorage() {
 
 function loadData() {
   let workouts = JSON.parse(localStorage.getItem('workouts'))
-  console.log(workouts)
-  workouts.forEach(element => addSession(element))
-}
+  if (!Array.isArray(workouts)) {
+    console.log("Error, workouts is not an array")
+    return false
+  }
+  workouts.forEach(session => {
+    let sessionHtml = ""
+    let sessionDateHtml = sessionDate(new Date(session.date))
+    // dateOfSession = `${dateOfSession.getMonth()} ${dateOfSession.getDate()}, ${dateOfSession.getDay()}`
 
-function addSession(session) {
-  let sessionHtml = ""
-  let dateOfSession = new Date(session.date)
-  dateOfSession = `${dateOfSession.getMonth()} ${dateOfSession.getDate()}, ${dateOfSession.getDay()}`
-  let allTheSegmentsHtml = ""
-  console.log(session)
-  session.segments.forEach((segment) => {
-    let segmentHtml = `
-    <div class="segment">
-              <div class="segment-left">
-                <img class="segment-icon blue-bg" src="images/simmingIcon.png" alt="swimming icon">
-                <div class="segment-info">
-                  <p class="segment-tpye">${segment.workoutType == "swimming" ? "Úszás" : "Szárazföld"}</p>
-                  <p class="segment-number blue">${segment.stat}</p>
+    let segmentHtmlArray = session.segments.map(element => generateSegmentHtml(element))
+    let segmentHtml = segmentHtmlArray.join("\r\n")
+
+    sessionHtml = `
+    <div class="session">
+    <h3>${sessionDateHtml}</h3>
+    <div class="session-stats">
+                <div class="session-stat">
+                  <img class="session-stat-icon" src="images/simmingIcon.png" alt="swimming icon">
+                  <p>NO DATA</p>
+                </div>
+                <div class="session-stat">
+                  <img class="session-stat-icon" src="images/runIcon.png" alt="swimming icon">
+                  <p>NO DATA</p>
+                </div>
+                <div class="session-stat">
+                  <img class="session-stat-icon" src="images/trophyIcon.png" alt="swimming icon">
+                  <p>NO DATA</p>
                 </div>
               </div>
-              <div class="segment-right">
-                <p class="time">${segment.startTime}-${segment.endTime}</p>
-                <img src="images/arrow.png" alt="arrow">
-              </div>
-            </div>`
-    allTheSegmentsHtml += segmentHtml
+    ${segmentHtml}
+    </div>
+    `
+    app.$.sessionContainer.insertAdjacentHTML("afterbegin", sessionHtml)
   })
-
-  sessionHtml = `
-  <div class="session">
-  <h3>${dateOfSession}</h3>
-  <div class="session-stats">
-              <div class="session-stat">
-                <img class="session-stat-icon" src="images/simmingIcon.png" alt="swimming icon">
-                <p>NO DATA</p>
-              </div>
-              <div class="session-stat">
-                <img class="session-stat-icon" src="images/runIcon.png" alt="swimming icon">
-                <p>NO DATA</p>
-              </div>
-              <div class="session-stat">
-                <img class="session-stat-icon" src="images/trophyIcon.png" alt="swimming icon">
-                <p>NO DATA</p>
-              </div>
-            </div>
-  ${allTheSegmentsHtml}
-  </div>
-  `
-  app.$.sessionContainer.insertAdjacentHTML("afterbegin", sessionHtml)
 }
 
-function addSegment(segment) {
-  console.log(segment)
+function sessionDate(sessionDate) {
+  let monthArray = ["jan", "febr", "márc", "ápr", "máj", "jún", "júl", "aug", "szept", "okt", "nov", "dec"];
+  let dayArray = ["hetfő", "kedd", "szerda", "csütörtök", "péntek", "szombat", "vasárnap"]
+  let month = monthArray[sessionDate.getMonth()]
+  month = month.charAt(0).toUpperCase() + month.slice(1);
+  let day = sessionDate.getDate()
+  let dayName = dayArray[sessionDate.getDay()]
+  dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+  let dayCounter = "0"
+  let dateHtml = `${month} ${day}, ${dayName} - Nap ${dayCounter}`
+  return dateHtml
+}
+
+function generateSegmentHtml(segment) {
+  return `<div class="segment">
+  <div class="segment-left">
+    <img class="segment-icon blue-bg" src="images/simmingIcon.png" alt="swimming icon">
+    <div class="segment-info">
+      <p class="segment-tpye">${segment.workoutType == "swimming" ? "Úszás" : "Szárazföld"}</p>
+      <p class="segment-number blue">${segment.stat}</p>
+    </div>
+  </div>
+  <div class="segment-right">
+    <p class="time">${segment.startTime}-${segment.endTime}</p>
+    <img src="images/arrow.png" alt="arrow">
+  </div>
+</div>`
 }
 
 
