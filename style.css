@@ -64,6 +64,7 @@ body {
   --green: #67ce67;
   --light-blue: #e0eaf9;
   --light-green: #d7ffd7;
+  --light-grey: #efefef;
 }
 
 /* Nav styles */
@@ -296,8 +297,28 @@ nav button {
   align-items: stretch;
 }
 
-/* Add wourkout form */
-.add-workout-form button {
+/* Add wourkout form: using custom-form*/
+
+#add-workout-btn {
+  margin-top: 10px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  padding: 15px 10px 15px 10px;
+  border-radius: 10px;
+  color: black;
+  background-color: white;
+}
+
+/* Input styles */
+
+.custom-form {
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.custom-form button {
   background-color: white;
   border: none;
   display: flex;
@@ -308,7 +329,7 @@ nav button {
   align-items: center;
 }
 
-.add-workout-form .btn-icon {
+.custom-form .btn-icon {
   width: 24px;
 }
 
@@ -327,11 +348,11 @@ nav button {
   font-size: 16px;
 }
 
-.form-item {
+.custom-form .form-item {
   margin-bottom: 8px;
 }
 
-.add-workout-form input {
+.custom-form input {
   background: #ffffff;
   border: 1px solid #848484;
   border-radius: 5px;
@@ -341,13 +362,13 @@ nav button {
   font-size: 16px;
 }
 
-.add-workout-form input[type="tel"] {
+.custom-form input[type="tel"] {
   max-width: 40%;
 }
 
 .textbox-with-unit {
   display: flex;
-  align-items: end;
+  align-items: baseline;
   gap: 5px;
 }
 
@@ -369,16 +390,8 @@ nav button {
   width: 50%;
 }
 
-#add-workout-btn {
-  margin-top: 10px;
-  width: 100%;
-  font-size: 16px;
-  font-weight: bold;
-  border: none;
-  padding: 15px 10px 15px 10px;
-  border-radius: 10px;
-  color: black;
-  background-color: white;
+.textbox-with-unit button {
+  margin-bottom: 0px;
 }
 
 /* Settings menu (modal) */
@@ -404,7 +417,8 @@ nav button {
   border-radius: 10px;
 }
 
-.modal-content .settings-options button {
+.modal-content .custom-form button {
+  background-color: var(--light-grey);
   margin-top: 2px;
   margin-bottom: 6px;
   border: none;
@@ -414,6 +428,13 @@ nav button {
   padding: 10px;
   border-radius: 10px;
   align-items: center;
+}
+
+.version-info {
+  color: grey;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-top: 3px;
 }
 
 /* Utility styles */

@@ -158,7 +158,7 @@
             <img src="images/close.png" alt="x icon" />
           </button>
         </div>
-        <div class="add-workout-form">
+        <div class="custom-form">
           <div id="workout-type-selector" class="form-item">
             <p>Edzés típusa</p>
             <div class="btn-choice">
@@ -246,16 +246,27 @@
               <img src="images/close.png" alt="x icon" />
             </button>
           </div>
-          <div class="settings-options">
-            <p>Adatok importálása</p>
-            <button class="action-btn" data-id="settingsImportDataBtn">
-              Inport
-            </button>
-            <p>Adatok exportálása</p>
-            <button class="action-btn" data-id="settingsExportDataBtn">
-              Export
-            </button>
+          <div class="custom-form">
+            <div class="form-item">
+              <p>Adatok</p>
+              <div class="btn-choice">
+                <button class="action-btn" data-id="settingsImportDataBtn">
+                  Importálás
+                </button>
+                <button class="action-btn" data-id="settingsExportDataBtn">
+                  Exportálás
+                </button>
+              </div>
+            </div>
+            <div class="form-item">
+              <p>Név</p>
+              <div class="textbox-with-unit">
+                <input type="text">
+                <button>Mentés</button>
+              </div>
+            </div>
           </div>
+          <p class="version-info">Version 0.0.0 2023.06.20</p>
         </div>
       </div>
     </main>
