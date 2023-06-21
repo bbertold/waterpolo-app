@@ -29,7 +29,7 @@ const app = {
     console.log("App init started")
     this.registerEventListener()
     // Cheack if there is data stored in local storage
-    if (window.localStorage.length == 0) {
+    if (window.localStorage.getItem("workouts") == "[]" || window.localStorage.length == 0) {
       initLocalStorage()
     } else {
       loadData()
@@ -126,6 +126,51 @@ function initLocalStorage() {
   let userPref = {};
   localStorage.setItem('userPref', JSON.stringify(userPref));
 
+  let onboardingHtml = `
+          <div class="session">
+            <h3>Üdvözlünk téged!</h3>
+            <div class="session-stats"></div>
+            <div class="segment">
+              <div class="segment-left">
+                <img 
+                  src="images/hello.png"
+                  alt="hand wave icon"
+                  class="segment-icon"
+                />
+                <div class="segment-info">
+                  <p class="segment-tpye grey">Ha új vagy,</p>
+                  <p class="segment-number">Add hozzá első edzésed</p>
+                </div>
+              </div>
+            </div>
+            <div class="segment">
+              <div class="segment-left">
+                <img 
+                  src="images/import.png"
+                  alt="hand wave icon"
+                  class="segment-icon"
+                />
+                <div class="segment-info">
+                  <p class="segment-tpye grey">Ha már jártál erre,</p>
+                  <p class="segment-number">Importálj edzéseket</p>
+                </div>
+              </div>
+            </div>
+            <div class="segment">
+              <div class="segment-left">
+                <img 
+                  src="images/id-card.png"
+                  alt="hand wave icon"
+                  class="segment-icon"
+                />
+                <div class="segment-info">
+                  <p class="segment-tpye grey">Tedd személyessé</p>
+                  <p class="segment-number">Álítsd be a neved</p>
+                </div>
+              </div>
+            </div>
+          </div>
+  `
   //display welcome text
   let htmlSegment = `<div class="segment">
   <div class="segment-left">
@@ -140,7 +185,8 @@ function initLocalStorage() {
     </div>
   </div>
 </div>`
-  app.$.sessionsContainer.insertAdjacentHTML("beforeend", htmlSegment)
+
+  app.$.sessionsContainer.insertAdjacentHTML("afterbegin", onboardingHtml)
 }
 
 function loadData() {
