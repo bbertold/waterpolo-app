@@ -19,9 +19,10 @@ const app = {
     settingsModalCloseBtn: document.querySelector('[data-id="settingsModalCloseBtn"]'),
     settingsImportDataBtn: document.querySelector('[data-id="settingsImportDataBtn"]'),
     settingsExportDataBtn: document.querySelector('[data-id="settingsExportDataBtn"]'),
-    sessionContainer: document.querySelector('[data-id="sessionContainer"]')
-
-
+    sessionContainer: document.querySelector('[data-id="sessionContainer"]'),
+    welcomeText: document.querySelector('[data-id="welcomeText"]'),
+    newNameInput: document.querySelector('[data-id="newNameInput"]'),
+    newNameBtn: document.querySelector('[data-id="newNameBtn"]')
   },
 
   init() {
@@ -33,6 +34,7 @@ const app = {
     } else {
       loadData()
     }
+    greeting()
   },
   registerEventListener() {
     //settings
@@ -50,6 +52,15 @@ const app = {
 
     app.$.settingsExportDataBtn.addEventListener("click", (event) => {
       exportData()
+    })
+
+    app.$.newNameBtn.addEventListener("click", (event) => {
+      let newName = app.$.newNameInput.value
+      let lsUserPref = JSON.parse(localStorage.getItem("userPref"))
+      lsUserPref.name = newName
+      lsUserPref = JSON.stringify(lsUserPref)
+      localStorage.setItem("userPref", lsUserPref)
+      greeting()
     })
 
     // New workout
@@ -141,26 +152,30 @@ function loadData() {
   workouts.forEach(session => {
     let sessionHtml = ""
     let sessionDateHtml = sessionDate(new Date(session.date))
-    // dateOfSession = `${dateOfSession.getMonth()} ${dateOfSession.getDate()}, ${dateOfSession.getDay()}`
 
     let segmentHtmlArray = session.segments.map(element => generateSegmentHtml(element))
     let segmentHtml = segmentHtmlArray.join("\r\n")
 
+    let sessionStat = calculateSessionStat(session)
+    let timeSpent = sessionStat.lenght / 1000 //milliseconds -> seconds
+    let hour = Math.floor(timeSpent / 3600)
+    let minute = Math.floor((timeSpent % 3600) / 60)
+    let formatedSegmentLength = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
     sessionHtml = `
     <div class="session">
     <h3>${sessionDateHtml}</h3>
     <div class="session-stats">
                 <div class="session-stat">
                   <img class="session-stat-icon" src="images/simmingIcon.png" alt="swimming icon">
-                  <p>NO DATA</p>
+                  <p>${sessionStat.swimming}m</p>
                 </div>
                 <div class="session-stat">
                   <img class="session-stat-icon" src="images/runIcon.png" alt="swimming icon">
-                  <p>NO DATA</p>
+                  <p>${sessionStat.running}m</p>
                 </div>
                 <div class="session-stat">
                   <img class="session-stat-icon" src="images/trophyIcon.png" alt="swimming icon">
-                  <p>NO DATA</p>
+                  <p>${formatedSegmentLength}</p>
                 </div>
               </div>
     ${segmentHtml}
@@ -172,31 +187,60 @@ function loadData() {
 
 function sessionDate(sessionDate) {
   let monthArray = ["jan", "febr", "márc", "ápr", "máj", "jún", "júl", "aug", "szept", "okt", "nov", "dec"];
-  let dayArray = ["hetfő", "kedd", "szerda", "csütörtök", "péntek", "szombat", "vasárnap"]
+  let dayArray = ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"]
   let month = monthArray[sessionDate.getMonth()]
   month = month.charAt(0).toUpperCase() + month.slice(1);
   let day = sessionDate.getDate()
   let dayName = dayArray[sessionDate.getDay()]
   dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
-  let dayCounter = "0"
+  let dayCounter = "?"
   let dateHtml = `${month} ${day}, ${dayName} - Nap ${dayCounter}`
   return dateHtml
 }
 
 function generateSegmentHtml(segment) {
+  let iconBgTpye = segment.workoutType == "swimming" ? "blue-bg" : "green-bg"
+  let iconSrc = segment.workoutType == "swimming" ? "images/simmingIcon.png" : "images/runIcon.png"
+  let iconAltText = segment.workoutType == "swimming" ? "swimming icon" : "running icon"
+  let statColor = segment.workoutType == "swimming" ? "blue" : "green"
+  let startTime = new Date(segment.startTime)
+  let endTime = new Date(segment.endTime)
   return `<div class="segment">
   <div class="segment-left">
-    <img class="segment-icon blue-bg" src="images/simmingIcon.png" alt="swimming icon">
+    <img class="segment-icon ${iconBgTpye}" src="${iconSrc}" alt="${iconAltText}">
     <div class="segment-info">
       <p class="segment-tpye">${segment.workoutType == "swimming" ? "Úszás" : "Szárazföld"}</p>
-      <p class="segment-number blue">${segment.stat}</p>
+      <p class="segment-number ${statColor}">${segment.stat}</p>
     </div>
   </div>
   <div class="segment-right">
-    <p class="time">${segment.startTime}-${segment.endTime}</p>
-    <img src="images/arrow.png" alt="arrow">
+    <p class="time">${String(startTime.getHours()).padStart(2, '0')}:${String(startTime.getMinutes()).padStart(2, '0')}-${String(endTime.getHours()).padStart(2, '0')}:${String(endTime.getMinutes()).padStart(2, '0')}</p >
+  <img src="images/arrow.png" alt="arrow">
   </div>
-</div>`
+</div > `
+}
+
+function calculateSessionStat(session) {
+  let sessionStat = {
+    swimming: 0,
+    running: 0,
+    lenght: 0
+  }
+  session.segments.forEach(segment => {
+    segment.stat = Number(segment.stat)
+    switch (segment.workoutType) {
+      case "swimming":
+        sessionStat.swimming = sessionStat.swimming + segment.stat
+        break
+      case "terrain": if (segment.activityType == "running") {
+        sessionStat.running = sessionStat.running + segment.stat
+      }
+        break
+    }
+    let segmentLength = Math.abs(segment.endTime - segment.startTime)
+    sessionStat.lenght = segmentLength
+  })
+  return sessionStat
 }
 
 
@@ -231,13 +275,20 @@ function newWorkout(key, value) {
     }
     case "texboxes": {
       app.state.newWourkout.stat = app.$.newWorkoutStatBox.value
-      let workoutDate = Date.parse(app.$.newWorkoutDateBox.value)
+      let workoutDateString = app.$.newWorkoutDateBox.value
+      let workoutDate = Date.parse(workoutDateString)
       if (workoutDate == NaN) {
         alert("Error - Inputed date cannot be interpeted by Date.parse")
       }
       app.state.newWourkout.date = workoutDate
-      app.state.newWourkout.startTime = app.$.newWorkoutStartTimeBox.value
-      app.state.newWourkout.endTime = app.$.newWorkoutEndTimeBox.value
+
+      let startTimeString = app.$.newWorkoutStartTimeBox.value
+      let endTimeString = app.$.newWorkoutEndTimeBox.value
+      let startTime = new Date(workoutDateString + "T" + startTimeString)
+      let endTime = new Date(workoutDateString + "T" + endTimeString)
+      app.state.newWourkout.startTime = startTime.getTime()
+      console.log(app.state.newWourkout.startTime)
+      app.state.newWourkout.endTime = endTime.getTime()
       break;
     }
   }
@@ -276,7 +327,30 @@ function saveNewWorkout() {
   app.$.addWourkoutOverlay.classList.add("hidden")
 }
 
-
+function greeting() {
+  let currentHour = new Date().getHours()
+  let welcomeGreetings = {
+    morning: "Jó reggelt",
+    day: "Szia",
+    evening: "Jó estét"
+  }
+  let welcomeText = ""
+  if (currentHour < 9) {
+    welcomeText = welcomeGreetings.morning
+  } else if (currentHour > 19) {
+    welcomeText = welcomeGreetings.evening
+  } else {
+    welcomeText = welcomeGreetings.day
+  }
+  let lsUserPref = JSON.parse(localStorage.getItem("userPref"))
+  let lsName = lsUserPref.name
+  if (lsName != undefined) {
+    welcomeText = welcomeText + `, ${lsName}!`
+  } else {
+    welcomeText = welcomeText + "!"
+  }
+  app.$.welcomeText.innerHTML = welcomeText
+}
 
 
 
@@ -303,7 +377,7 @@ function loadUI(segment) {
   let iconBgTpye = segment.segmentType == "water" ? "blue-bg" : "green-bg"
   let iconLocation = segment.segmentType == "water" ? "images/simmingIcon.png" : "images/runIcon.png"
   let iconAltText = segment.segmentType == "water" ? "swimming icon" : "running icon"
-  let htmlSegment = `<div class="segment">
+  let htmlSegment = `< div class="segment" >
     <div class="segment-left">
       <img 
         src="${iconLocation}"
@@ -319,7 +393,7 @@ function loadUI(segment) {
       <p class="time">8:30-9:30</p>
       <img src="images/arrow.png" alt="arrow" />
     </div>
-  </div>`
+  </div > `
   app.$.sessionsContainer.insertAdjacentHTML("beforeend", htmlSegment)
 }
 
