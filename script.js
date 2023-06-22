@@ -96,6 +96,23 @@ const app = {
       app.$.activityTypeRunningBtn.classList.add("selected")
       newWorkout("activityType", "running")
     })
+
+    app.$.newWorkoutStatBox.addEventListener("change", function () {
+      newWorkout("stat", app.$.newWorkoutStatBox.value)
+    })
+
+    app.$.newWorkoutDateBox.addEventListener("change", function () {
+      newWorkout("date", app.$.newWorkoutDateBox.value)
+    })
+
+    app.$.newWorkoutStartTimeBox.addEventListener("change", function () {
+      newWorkout("startTime", app.$.newWorkoutStartTimeBox.value)
+    })
+
+    app.$.newWorkoutEndTimeBox.addEventListener("change", function () {
+      newWorkout("endTime", app.$.newWorkoutEndTimeBox.value)
+    })
+
     app.$.addInputedWorkoutBtn.addEventListener("click", (event) => {
       if (app.$.newWorkoutStatBox.value == "" || app.$.newWorkoutDateBox.value == "" || app.$.newWorkoutStartTimeBox.value == "" || app.$.newWorkoutEndTimeBox.value == "") {
         console.log("Something is empty")
@@ -284,7 +301,7 @@ function calculateSessionStat(session) {
         break
     }
     let segmentLength = Math.abs(segment.endTime - segment.startTime)
-    sessionStat.lenght = segmentLength
+    sessionStat.lenght = sessionStat.lenght + segmentLength
   })
   return sessionStat
 }
@@ -292,7 +309,18 @@ function calculateSessionStat(session) {
 
 function exportData() {
   console.log("Data export init")
-  navigator.clipboard.writeText(JSON.stringify(localStorage));
+  let dataToExport = JSON.stringify(localStorage)
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(dataToExport);
+  } else {
+    let textArea = document.createElement("textarea")
+    textArea.value = dataToExport
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand("copy")
+    document.body.removeChild(textArea)
+  }
+
 }
 
 function importData() {
@@ -319,24 +347,31 @@ function newWorkout(key, value) {
       app.state.newWourkout.activityType = "running"
       break;
     }
-    case "texboxes": {
-      app.state.newWourkout.stat = app.$.newWorkoutStatBox.value
-      let workoutDateString = app.$.newWorkoutDateBox.value
+    case "stat": app.state.newWourkout.stat = value
+      break
+    case "date": let workoutDateString = value
       let workoutDate = Date.parse(workoutDateString)
       if (workoutDate == NaN) {
         alert("Error - Inputed date cannot be interpeted by Date.parse")
+      } else {
+        app.state.newWourkout.date = workoutDate
       }
-      app.state.newWourkout.date = workoutDate
+      break
 
-      let startTimeString = app.$.newWorkoutStartTimeBox.value
-      let endTimeString = app.$.newWorkoutEndTimeBox.value
-      let startTime = new Date(workoutDateString + "T" + startTimeString)
-      let endTime = new Date(workoutDateString + "T" + endTimeString)
+    case "startTime":
+      let inputedStartTimeWorkoutDateString = app.$.newWorkoutDateBox.value
+      let startTimeString = value
+      let startTime = new Date(inputedStartTimeWorkoutDateString + "T" + startTimeString)
       app.state.newWourkout.startTime = startTime.getTime()
-      console.log(app.state.newWourkout.startTime)
+      break
+
+    case "endTime":
+      let inputedEndTimeWorkoutDateString = app.$.newWorkoutDateBox.value
+      let endTimeString = app.$.newWorkoutEndTimeBox.value
+      let endTime = new Date(inputedEndTimeWorkoutDateString + "T" + endTimeString)
       app.state.newWourkout.endTime = endTime.getTime()
       break;
-    }
+
   }
 }
 
@@ -397,49 +432,3 @@ function greeting() {
   }
   app.$.welcomeText.innerHTML = welcomeText
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-function addData() {
-  localStorage.setItem("date", "hello world")
-}
-
-function loadDataForUI() {
-  let segment = { segmentType: "terrain" }
-  loadUI(segment)
-}
-
-function loadUI(segment) {
-  let iconBgTpye = segment.segmentType == "water" ? "blue-bg" : "green-bg"
-  let iconLocation = segment.segmentType == "water" ? "images/simmingIcon.png" : "images/runIcon.png"
-  let iconAltText = segment.segmentType == "water" ? "swimming icon" : "running icon"
-  let htmlSegment = `< div class="segment" >
-    <div class="segment-left">
-      <img 
-        src="${iconLocation}"
-        alt="${iconAltText}"
-        class="segment-icon ${iconBgTpye}"
-      />
-      <div class="segment-info">
-        <p class="segment-tpye">Futás</p>
-        <p class="segment-number green">1200m</p>
-      </div>
-    </div>
-    <div class="segment-right">
-      <p class="time">8:30-9:30</p>
-      <img src="images/arrow.png" alt="arrow" />
-    </div>
-  </div > `
-  app.$.sessionsContainer.insertAdjacentHTML("beforeend", htmlSegment)
-}
-

@@ -248,33 +248,31 @@ nav button {
   width: 70px;
   height: 70px;
   border-radius: 10px;
-  border: none;
-  font-size: 36px;
-  text-align: center;
   padding: 5px 0;
-  color: black;
-  background: #f1f1f180;
-  -webkit-backdrop-filter: blur(5px);
-  backdrop-filter: blur(5px);
+  background-color: white;
+  border: 2px solid var(--grey);
+}
+
+#floatingActionBtn img {
+  width: 24px;
 }
 
 /* Add wourkout ui */
 /* Header and background */
 
 #add-workout {
-  background: #f1f1f1af;
   -webkit-backdrop-filter: blur(25px);
   backdrop-filter: blur(25px);
   border-radius: 26px 26px 0px 0px;
   padding: 15px 20px 15px 20px;
-  position: absolute;
   width: 100vw;
   bottom: 0px;
-  border: 4px solid #84848450;
-  position: absolute;
+  /*border: 4px solid #84848450;*/
+  position: fixed;
   left: 0;
   right: 0;
   margin: 0 auto;
+  background: rgba(255, 254, 254, 0.46);
 }
 
 .header-container h2 {
@@ -302,13 +300,24 @@ nav button {
 #add-workout-btn {
   margin-top: 10px;
   width: 100%;
-  font-size: 16px;
-  font-weight: bold;
   border: none;
   padding: 15px 10px 15px 10px;
   border-radius: 10px;
-  color: black;
   background-color: white;
+  gap: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#add-workout-btn p {
+  font-size: 22px;
+  font-weight: bold;
+  color: black;
+}
+
+#add-workout-btn .btn-icon {
+  width: 18px;
 }
 
 /* Input styles */
@@ -329,7 +338,7 @@ nav button {
   align-items: center;
 }
 
-.custom-form .btn-icon {
+.btn-icon {
   width: 24px;
 }
 
@@ -370,6 +379,10 @@ nav button {
   display: flex;
   align-items: baseline;
   gap: 5px;
+}
+
+.textbox-with-unit input[type="text"] {
+  max-width: 65%;
 }
 
 .multiple-textbox {
@@ -425,9 +438,11 @@ nav button {
   display: flex;
   justify-content: center;
   gap: 5px;
-  padding: 10px;
   border-radius: 10px;
   align-items: center;
+  font-weight: bold;
+  color: black;
+  flex-grow: 1;
 }
 
 .version-info {
@@ -461,6 +476,14 @@ nav button {
 
 .grey {
   color: var(--grey);
+}
+
+.green-darkbg {
+  background-color: var(--green);
+}
+
+.blue-darkbg {
+  background-color: var(--blue);
 }
 
 .hidden {

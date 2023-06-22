@@ -86,7 +86,9 @@
         <h2>Edzések</h2>
         <div class="session-container" data-id="sessionContainer"></div>
       </div>
-      <button id="floatingActionBtn" data-id="addWorkoutBtn">+</button>
+      <button id="floatingActionBtn" data-id="addWorkoutBtn">
+        <img src="images/plus.png" alt="Plus icon" />
+      </button>
       <div id="add-workout" data-id="addWourkoutOverlay" class="hidden">
         <div class="header-container">
           <h2>Edzés hozzáadása</h2>
@@ -96,7 +98,7 @@
         </div>
         <div class="custom-form">
           <div id="workout-type-selector" class="form-item">
-            <p>Edzés típusa</p>
+            <label>Edzés típusa</label>
             <div class="btn-choice">
               <button class="blue action-btn" data-id="workoutTypeSwimmingBtn">
                 <img
@@ -117,7 +119,7 @@
             class="form-item"
             data-id="activtyTpyeSelectorContainer"
           >
-            <p>Edzés fajta</p>
+            <label>Edzés fajta</label>
             <div class="btn-choice">
               <button
                 class="green action-btn"
@@ -137,14 +139,19 @@
             </div>
           </div>
           <div id="stat" class="form-item">
-            <p>Teljesítmény</p>
+            <label for="new-workout-stat-box">Teljesítmény</label>
             <div class="textbox-with-unit">
-              <input type="tel" name="stat" data-id="newWorkoutStatBox" />
+              <input
+                type="tel"
+                name="stat"
+                data-id="newWorkoutStatBox"
+                id="new-workout-stat-box"
+              />
               <p>m</p>
             </div>
           </div>
           <div id="time-date" class="form-item">
-            <p>Időpont</p>
+            <label>Időpont</label>
             <div class="multiple-textbox">
               <input
                 type="date"
@@ -171,7 +178,8 @@
           </div>
         </div>
         <button id="add-workout-btn" data-id="addInputedWorkoutBtn">
-          Hozzáadás
+          <img src="images/plus.png" alt="Plus icon" class="btn-icon" />
+          <p>Hozzáadás</p>
         </button>
       </div>
       <div class="modal-background hidden" data-id="settingsModal">
