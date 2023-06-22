@@ -22,11 +22,19 @@ const app = {
     sessionContainer: document.querySelector('[data-id="sessionContainer"]'),
     welcomeText: document.querySelector('[data-id="welcomeText"]'),
     newNameInput: document.querySelector('[data-id="newNameInput"]'),
-    newNameBtn: document.querySelector('[data-id="newNameBtn"]')
+    newNameBtn: document.querySelector('[data-id="newNameBtn"]'),
+    allTimeStatSwimming: document.querySelector('[data-id="allTimeStatSwimming"]'),
+    allTImeStatSwimmingUnit: document.querySelector('[data-id="allTImeStatSwimmingUnit"]'),
+    allTimeStatRunning: document.querySelector('[data-id="allTimeStatRunning"]'),
+    allTImeStatRunningUnit: document.querySelector('[data-id="allTImeStatRunningUnit"]'),
+    allTimeStatTimeLength: document.querySelector('[data-id="allTimeStatTimeLength"]'),
+    allTImeStatTimeLengthUnit: document.querySelector('[data-id="allTImeStatTimeLengthUnit"]'),
+    allTimeStatProgressBar: document.querySelector('[data-id="allTimeStatProgressBar"]')
   },
 
   init() {
     console.log("App init started")
+    let loadStarted = performance.now()
     this.registerEventListener()
     // Cheack if there is data stored in local storage
     if (window.localStorage.getItem("workouts") == "[]" || window.localStorage.length == 0) {
@@ -34,7 +42,10 @@ const app = {
     } else {
       loadData()
     }
+    loadAllTimeStat()
     greeting()
+    let loadEnded = performance.now()
+    console.log(`Loading took: ${loadEnded - loadStarted}`)
   },
   registerEventListener() {
     //settings
@@ -124,7 +135,12 @@ const app = {
     })
   },
   state: {
-    newWourkout: {}
+    newWourkout: {},
+    allTimeStat: {
+      swimming: 0,
+      running: 0,
+      timeLength: 0
+    }
   }
 }
 
@@ -220,6 +236,11 @@ function loadData() {
     let segmentHtml = segmentHtmlArray.join("\r\n")
 
     let sessionStat = calculateSessionStat(session)
+
+    app.state.allTimeStat.swimming = app.state.allTimeStat.swimming + sessionStat.swimming
+    app.state.allTimeStat.running = app.state.allTimeStat.running + sessionStat.running
+    app.state.allTimeStat.timeLength = app.state.allTimeStat.timeLength + sessionStat.lenght
+
     let timeSpent = sessionStat.lenght / 1000 //milliseconds -> seconds
     let hour = Math.floor(timeSpent / 3600)
     let minute = Math.floor((timeSpent % 3600) / 60)
@@ -431,4 +452,32 @@ function greeting() {
     welcomeText = welcomeText + "!"
   }
   app.$.welcomeText.innerHTML = welcomeText
+}
+
+function loadAllTimeStat() {
+  let timeSpent = app.state.allTimeStat.timeLength / 1000 //milliseconds -> seconds
+  let hour = Math.floor(timeSpent / 3600)
+  if (String(hour).split(".").length < 2 || String(hour).split(".")[1].length <= 2) {
+    hour = hour.toFixed(1);
+  }
+  console.log(app.$.allTimeStatProgressBar)
+  app.$.allTimeStatProgressBar.style.setProperty("--width", "60")
+  app.$.allTimeStatProgressBar.setAttribute("data-label", "60%")
+  app.$.allTimeStatSwimming.innerHTML = app.state.allTimeStat.swimming
+  app.$.allTImeStatSwimmingUnit.innerHTML = "m"
+  app.$.allTimeStatRunning.innerHTML = app.state.allTimeStat.running
+  app.$.allTImeStatRunningUnit.innerHTML = "m"
+  app.$.allTimeStatTimeLength.innerHTML = hour
+  app.$.allTImeStatTimeLengthUnit.innerHTML = "óra"
+}
+
+function AddTestData(times) {
+  for (let index = 0; index < times; index++) {
+    let localStorageWorkouts = window.localStorage.getItem("workouts")
+    localStorageWorkouts = JSON.parse(localStorageWorkouts)
+    let newSession = JSON.parse(`{ "date": 1687392000000, "segments": [{ "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687417200000, "endTime": 1687420800000 }, { "workoutType": "terrain", "activityType": "strength", "stat": "2500", "date": 1687392000000, "startTime": 1687420800000, "endTime": 1687424400000 }, { "workoutType": "terrain", "activityType": "running", "stat": "5000", "date": 1687392000000, "startTime": 1687424400000, "endTime": 1687384800000 }, { "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687431600000, "endTime": 1687438800000 }]}`)
+    localStorageWorkouts.unshift(newSession)
+    localStorageWorkouts = JSON.stringify(localStorageWorkouts)
+    window.localStorage.setItem("workouts", localStorageWorkouts)
+  }
 }

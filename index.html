@@ -33,11 +33,12 @@
       <div class="all-time-stats">
         <h2>Összesített statisztikák</h2>
         <div class="all-time-stats-conatiner">
-          <div class="progress-bar-container">
-            <div class="progress-bar">
-              <p>75%</p>
-            </div>
-          </div>
+          <div
+            class="progress-bar"
+            data-id="allTimeStatProgressBar"
+            data-label="9%"
+            style="--width: 20"
+          ></div>
           <div class="stat">
             <div class="stat-type">
               <img
@@ -48,8 +49,8 @@
               <p class="stat-description blue">Úszás</p>
             </div>
             <div class="stat-data">
-              <p class="stat-number">12 321</p>
-              <p class="stat-unit">m</p>
+              <p class="stat-number" data-id="allTimeStatSwimming"></p>
+              <p class="stat-unit" data-id="allTImeStatSwimmingUnit"></p>
             </div>
           </div>
           <div class="stat">
@@ -62,8 +63,8 @@
               <p class="stat-description green">Futás</p>
             </div>
             <div class="stat-data">
-              <p class="stat-number">12 321</p>
-              <p class="stat-unit">m</p>
+              <p class="stat-number" data-id="allTimeStatRunning"></p>
+              <p class="stat-unit" data-id="allTImeStatRunningUnit"></p>
             </div>
           </div>
           <div class="stat">
@@ -73,11 +74,11 @@
                 src="images/trophyIcon.png"
                 alt="Trophy Icon"
               />
-              <p class="stat-description yellow">Nap teljesítve</p>
+              <p class="stat-description yellow">Edzés teljesítve</p>
             </div>
             <div class="stat-data">
-              <p class="stat-number">12 321</p>
-              <p class="stat-unit">m</p>
+              <p class="stat-number" data-id="allTimeStatTimeLength"></p>
+              <p class="stat-unit" data-id="allTImeStatTimeLengthUnit"></p>
             </div>
           </div>
         </div>
