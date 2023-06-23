@@ -50,23 +50,19 @@ const app = {
   },
   registerEventListener() {
     //settings
-    app.$.settingsOpenBtn.addEventListener("click", (event) => {
+    app.$.settingsOpenBtn.addEventListener("click", () => {
       app.$.settingsModal.classList.remove("hidden")
     })
 
-    app.$.settingsModalCloseBtn.addEventListener("click", (event) => {
+    app.$.settingsModalCloseBtn.addEventListener("click", () => {
       app.$.settingsModal.classList.add("hidden")
     })
 
-    app.$.settingsImportDataBtn.addEventListener("click", (event) => {
-      importData()
-    })
+    app.$.settingsImportDataBtn.addEventListener("click", () => importData())
 
-    app.$.settingsExportDataBtn.addEventListener("click", (event) => {
-      exportData()
-    })
+    app.$.settingsExportDataBtn.addEventListener("click", () => exportData())
 
-    app.$.newNameBtn.addEventListener("click", (event) => {
+    app.$.newNameBtn.addEventListener("click", () => {
       let newName = app.$.newNameInput.value
       let lsUserPref = JSON.parse(localStorage.getItem("userPref"))
       lsUserPref.name = newName
@@ -76,34 +72,34 @@ const app = {
     })
 
     // New workout
-    app.$.openNewWorkoutBtn.addEventListener("click", (event) => {
+    app.$.openNewWorkoutBtn.addEventListener("click", () => {
       app.$.addWourkoutOverlay.classList.remove("hidden")
     })
-    app.$.addWourkoutCloseBtn.addEventListener("click", (event) => {
+    app.$.addWourkoutCloseBtn.addEventListener("click", () => {
       app.$.addWourkoutOverlay.classList.add("hidden")
       app.state.newWourkout = []
     })
 
     // Add new workout 
-    app.$.workoutTypeSwimmingBtn.addEventListener("click", (event) => {
+    app.$.workoutTypeSwimmingBtn.addEventListener("click", () => {
       app.$.workoutTypeTerrainBtn.classList.remove("selected")
       app.$.workoutTypeSwimmingBtn.classList.add("selected")
       app.$.activtyTpyeSelectorContainer.classList.add("hidden")
       delete app.state.newWourkout.activityType
       newWorkout("workoutType", "swimming")
     })
-    app.$.workoutTypeTerrainBtn.addEventListener("click", (event) => {
+    app.$.workoutTypeTerrainBtn.addEventListener("click", () => {
       app.$.workoutTypeSwimmingBtn.classList.remove("selected")
       app.$.workoutTypeTerrainBtn.classList.add("selected")
       app.$.activtyTpyeSelectorContainer.classList.remove("hidden")
       newWorkout("workoutType", "terrain")
     })
-    app.$.activityTypeStrengthBtn.addEventListener("click", (event) => {
+    app.$.activityTypeStrengthBtn.addEventListener("click", () => {
       app.$.activityTypeRunningBtn.classList.remove("selected")
       app.$.activityTypeStrengthBtn.classList.add("selected")
       newWorkout("activityType", "strength")
     })
-    app.$.activityTypeRunningBtn.addEventListener("click", (event) => {
+    app.$.activityTypeRunningBtn.addEventListener("click", () => {
       app.$.activityTypeStrengthBtn.classList.remove("selected")
       app.$.activityTypeRunningBtn.classList.add("selected")
       newWorkout("activityType", "running")
@@ -125,15 +121,7 @@ const app = {
       newWorkout("endTime", app.$.newWorkoutEndTimeBox.value)
     })
 
-    app.$.addInputedWorkoutBtn.addEventListener("click", (event) => {
-      if (app.$.newWorkoutStatBox.value == "" || app.$.newWorkoutDateBox.value == "" || app.$.newWorkoutStartTimeBox.value == "" || app.$.newWorkoutEndTimeBox.value == "") {
-        console.log("Something is empty")
-      } else {
-        newWorkout("texboxes")
-        saveNewWorkout()
-        location.reload()
-      }
-    })
+    app.$.addInputedWorkoutBtn.addEventListener("click", saveNewWorkout)
   },
   state: {
     newWourkout: {},
@@ -206,21 +194,6 @@ function initLocalStorage() {
             </div>
           </div>
   `
-  //display welcome text
-  let htmlSegment = `<div class="segment">
-  <div class="segment-left">
-    <img 
-      src="images/hello.png"
-      alt="hand wave icon"
-      class="segment-icon"
-    />
-    <div class="segment-info">
-      <p class="segment-tpye grey">Add hozzá első edzésed!</p>
-      <p class="segment-number">Üdvözlünk téged</p>
-    </div>
-  </div>
-</div>`
-
   app.$.sessionsContainer.insertAdjacentHTML("afterbegin", onboardingHtml)
 }
 
@@ -307,7 +280,6 @@ function generateSegmentHtml(segment) {
   </div>
   <div class="segment-right">
     <p class="time">${String(startTime.getHours()).padStart(2, '0')}:${String(startTime.getMinutes()).padStart(2, '0')}-${String(endTime.getHours()).padStart(2, '0')}:${String(endTime.getMinutes()).padStart(2, '0')}</p >
-  <img src="images/arrow.png" alt="arrow">
   </div>
 </div > `
 }
@@ -338,7 +310,7 @@ function calculateSessionStat(session) {
 
 function exportData() {
   console.log("Data export init")
-  let dataToExport = JSON.stringify(localStorage)
+  let dataToExport = JSON.stringify(localStorage.getItem("workouts"))
   if (navigator.clipboard) {
     navigator.clipboard.writeText(dataToExport);
   } else {
@@ -353,7 +325,7 @@ function exportData() {
 }
 
 function importData() {
-  let inputData = prompt("Paste data", '{"wourkouts":"[null]","allTimeStats":"{}","userPref":"{}"}')
+  let inputData = prompt("Paste data", '[]')
   inputData = JSON.parse(inputData);
   Object.keys(inputData).forEach(function (k) {
     localStorage.setItem(k, JSON.stringify(inputData[k]));
@@ -405,6 +377,10 @@ function newWorkout(key, value) {
 }
 
 function saveNewWorkout() {
+  if (app.$.newWorkoutStatBox.value == "" || app.$.newWorkoutDateBox.value == "" || app.$.newWorkoutStartTimeBox.value == "" || app.$.newWorkoutEndTimeBox.value == "" || app.state.newWourkout.startTime > app.state.newWourkout.endTime) {
+    console.log("should return")
+    return false
+  }
   let newWorkout = app.state.newWourkout
   let localStorageWorkouts = window.localStorage.getItem("workouts")
   localStorageWorkouts = JSON.parse(localStorageWorkouts)
@@ -436,6 +412,7 @@ function saveNewWorkout() {
   app.$.activityTypeRunningBtn.classList.remove("selected")
   app.$.activityTypeStrengthBtn.classList.remove("selected")
   app.$.addWourkoutOverlay.classList.add("hidden")
+  loadData()
 }
 
 function greeting() {
@@ -487,15 +464,19 @@ function loadAllTimeStat() {
   if (String(hour).split(".").length < 2 || String(hour).split(".")[1].length <= 2) {
     hour = hour.toFixed(1);
   }
-  console.log(app.$.allTimeStatProgressBar)
-  let currentDayCounter = dayCounter(app.state.currentDate.getTime(), true)
-  console.log(currentDayCounter)
-  if (currentDayCounter[0] != -1) {
-    let precent = currentDayCounter[0] / currentDayCounter[1]
-    precent = Math.floor(precent * 100)
-    app.$.allTimeStatProgressBar.style.setProperty("--width", precent)
-    app.$.allTimeStatProgressBar.setAttribute("data-label", `${precent}%`)
+  if (dayCounter(app.state.currentDate.getTime()) != -1) {
+    let currentDayCounter = dayCounter(app.state.currentDate.getTime(), true)
+    if (currentDayCounter[0] != -1) {
+      let precent = currentDayCounter[0] / currentDayCounter[1]
+      precent = Math.floor(precent * 100)
+      app.$.allTimeStatProgressBar.style.setProperty("--width", precent)
+      app.$.allTimeStatProgressBar.setAttribute("data-label", `${precent}%`)
+    }
+  } else {
+    console.log(dayCounter(app.state.currentDate.getTime()))
+    app.$.allTimeStatProgressBar.remove()
   }
+
   app.$.allTimeStatSwimming.innerHTML = app.state.allTimeStat.swimming
   app.$.allTImeStatSwimmingUnit.innerHTML = "m"
   app.$.allTimeStatRunning.innerHTML = app.state.allTimeStat.running
