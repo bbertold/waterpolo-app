@@ -29,7 +29,8 @@ const app = {
     allTImeStatRunningUnit: document.querySelector('[data-id="allTImeStatRunningUnit"]'),
     allTimeStatTimeLength: document.querySelector('[data-id="allTimeStatTimeLength"]'),
     allTImeStatTimeLengthUnit: document.querySelector('[data-id="allTImeStatTimeLengthUnit"]'),
-    allTimeStatProgressBar: document.querySelector('[data-id="allTimeStatProgressBar"]')
+    allTimeStatProgressBar: document.querySelector('[data-id="allTimeStatProgressBar"]'),
+    navCurrentDate: document.querySelector('[data-id="navCurrentDate"]')
   },
 
   init() {
@@ -140,7 +141,8 @@ const app = {
       swimming: 0,
       running: 0,
       timeLength: 0
-    }
+    },
+    currentDate: new Date()
   }
 }
 
@@ -277,8 +279,14 @@ function sessionDate(sessionDate) {
   let day = sessionDate.getDate()
   let dayName = dayArray[sessionDate.getDay()]
   dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
-  let dayCounter = "?"
-  let dateHtml = `${month} ${day}, ${dayName} - Nap ${dayCounter}`
+  let dayCounterNumber = dayCounter(sessionDate.getTime())
+  let dayString = ""
+  if (dayCounterNumber < 0) {
+    dayString = ""
+  } else {
+    dayString = `- Nap ${dayCounterNumber}`
+  }
+  let dateHtml = `${month} ${day}, ${dayName} ${dayString}`
   return dateHtml
 }
 
@@ -412,6 +420,7 @@ function saveNewWorkout() {
     newSession.segments = []
     newSession.segments.push(newWorkout)
     localStorageWorkouts.unshift(newSession)
+    localStorageWorkouts.sort((a, b) => a.date - b.date)
   } else {
     console.log("found")
     console.log(currentSession)
@@ -452,6 +461,24 @@ function greeting() {
     welcomeText = welcomeText + "!"
   }
   app.$.welcomeText.innerHTML = welcomeText
+
+  let currentDate = app.state.currentDate
+  let monthArray = ["jan", "febr", "márc", "ápr", "máj", "jún", "júl", "aug", "szept", "okt", "nov", "dec"];
+  let dayArray = ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"]
+  let month = monthArray[currentDate.getMonth()]
+  month = month.charAt(0).toUpperCase() + month.slice(1);
+  let day = currentDate.getDate()
+  let dayName = dayArray[currentDate.getDay()]
+  dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+  let dayCounterNumber = dayCounter(currentDate.getTime())
+  let dayString = ""
+  if (dayCounterNumber < 0) {
+    dayString = ""
+  } else {
+    dayString = `- Nap ${dayCounterNumber}`
+  }
+  let dateHtml = `${month} ${day}, ${dayName} ${dayString}`
+  app.$.navCurrentDate.innerHTML = dateHtml.toUpperCase()
 }
 
 function loadAllTimeStat() {
@@ -461,8 +488,14 @@ function loadAllTimeStat() {
     hour = hour.toFixed(1);
   }
   console.log(app.$.allTimeStatProgressBar)
-  app.$.allTimeStatProgressBar.style.setProperty("--width", "60")
-  app.$.allTimeStatProgressBar.setAttribute("data-label", "60%")
+  let currentDayCounter = dayCounter(app.state.currentDate.getTime(), true)
+  console.log(currentDayCounter)
+  if (currentDayCounter[0] != -1) {
+    let precent = currentDayCounter[0] / currentDayCounter[1]
+    precent = Math.floor(precent * 100)
+    app.$.allTimeStatProgressBar.style.setProperty("--width", precent)
+    app.$.allTimeStatProgressBar.setAttribute("data-label", `${precent}%`)
+  }
   app.$.allTimeStatSwimming.innerHTML = app.state.allTimeStat.swimming
   app.$.allTImeStatSwimmingUnit.innerHTML = "m"
   app.$.allTimeStatRunning.innerHTML = app.state.allTimeStat.running
@@ -479,5 +512,23 @@ function AddTestData(times) {
     localStorageWorkouts.unshift(newSession)
     localStorageWorkouts = JSON.stringify(localStorageWorkouts)
     window.localStorage.setItem("workouts", localStorageWorkouts)
+  }
+}
+
+function dayCounter(date, outOf) {
+  let campDay = [{ "date": 1689552000000 }, { "date": 1689638400000 }, { "date": 1689724800000 }, { "date": 1689811200000 }, { "date": 1689897600000 }, { "date": 1690156800000 }, { "date": 1690243200000 }, { "date": 1690329600000 }, { "date": 1690416000000 }, { "date": 1690502400000 }, { "date": 1690761600000 }, { "date": 1690848000000 }, { "date": 1690934400000 }, { "date": 1691020800000 }, { "date": 1691107200000 }, { "date": 1691366400000 }, { "date": 1691452800000 }, { "date": 1691539200000 }, { "date": 1691625600000 }, { "date": 1691712000000 }, { "date": 1691971200000 }, { "date": 1692057600000 }, { "date": 1692144000000 }, { "date": 1692230400000 }, { "date": 1692316800000 }, { "date": 1692576000000 }, { "date": 1692662400000 }, { "date": 1692748800000 }, { "date": 1692835200000 }, { "date": 1692921600000 }, { "date": 1693180800000 }, { "date": 1693267200000 }, { "date": 1693353600000 }, { "date": 1693440000000 }]
+  let index = campDay.findIndex(day => day.date === date)
+  if (index == -1) {
+    if (outOf) {
+      return [-1, -1]
+    } else {
+      return -1
+    }
+  } else {
+    if (outOf) {
+      return [index + 1, campDay.length]
+    } else {
+      return index + 1
+    }
   }
 }
