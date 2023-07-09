@@ -457,6 +457,20 @@ nav button {
   margin-top: 3px;
 }
 
+/* Spacer */
+#spacer {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#spacer span {
+  color: grey;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
 /* Utility styles */
 
 .blue {

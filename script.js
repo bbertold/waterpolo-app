@@ -33,21 +33,6 @@ const app = {
     navCurrentDate: document.querySelector('[data-id="navCurrentDate"]')
   },
 
-  init() {
-    console.log("App init started")
-    let loadStarted = performance.now()
-    this.registerEventListener()
-    // Cheack if there is data stored in local storage
-    if (window.localStorage.getItem("workouts") == "[]" || window.localStorage.length == 0) {
-      initLocalStorage()
-    } else {
-      loadData()
-    }
-    loadAllTimeStat()
-    greeting()
-    let loadEnded = performance.now()
-    console.log(`Loading took: ${loadEnded - loadStarted}`)
-  },
   registerEventListener() {
     //settings
     app.$.settingsOpenBtn.addEventListener("click", () => {
@@ -123,14 +108,50 @@ const app = {
 
     app.$.addInputedWorkoutBtn.addEventListener("click", saveNewWorkout)
   },
+
   state: {
-    newWourkout: {},
+    newWourkout: {
+      workoutType: "",
+      activityType: "",
+      stat: "",
+      date: 0,
+      startTime: 0,
+      endTime: 0
+    },
     allTimeStat: {
       swimming: 0,
       running: 0,
       timeLength: 0
     },
     currentDate: new Date()
+  },
+
+  init() {
+    let loadStarted = performance.now()
+    this.registerEventListener()
+    // Cheack if there is data stored in local storage
+    if (window.localStorage.getItem("workouts") == "[]" || window.localStorage.length == 0) {
+      initLocalStorage()
+    } else {
+      loadData()
+    }
+    loadAllTimeStat()
+    greeting()
+    let loadEnded = performance.now()
+    console.info(`App initalised, took: ${loadEnded - loadStarted} milliseconds`)
+  },
+
+  reload() {
+    let reloadStarted = performance.now()
+    this.state.allTimeStat = {
+      swimming: 0,
+      running: 0,
+      timeLength: 0
+    }
+    loadData()
+    loadAllTimeStat()
+    let reloadEnded = performance.now()
+    console.log(`Reload completed, took: ${reloadEnded - reloadStarted}`)
   }
 }
 
@@ -203,6 +224,7 @@ function loadData() {
     console.log("Error, workouts is not an array")
     return false
   }
+  app.$.sessionContainer.innerHTML = ""
   workouts.forEach(session => {
     let sessionHtml = ""
     let sessionDateHtml = sessionDate(new Date(session.date))
@@ -225,15 +247,15 @@ function loadData() {
     <h3>${sessionDateHtml}</h3>
     <div class="session-stats">
                 <div class="session-stat">
-                  <img class="session-stat-icon" src="images/simmingIcon.png" alt="swimming icon">
+                  <img class="session-stat-icon" src="images/swimIcon.svg" alt="swimming icon">
                   <p>${sessionStat.swimming}m</p>
                 </div>
                 <div class="session-stat">
-                  <img class="session-stat-icon" src="images/runIcon.png" alt="swimming icon">
+                  <img class="session-stat-icon" src="images/runIcon.svg" alt="swimming icon">
                   <p>${sessionStat.running}m</p>
                 </div>
                 <div class="session-stat">
-                  <img class="session-stat-icon" src="images/trophyIcon.png" alt="swimming icon">
+                  <img class="session-stat-icon" src="images/trophyIcon.svg" alt="swimming icon">
                   <p>${formatedSegmentLength}</p>
                 </div>
               </div>
@@ -265,7 +287,7 @@ function sessionDate(sessionDate) {
 
 function generateSegmentHtml(segment) {
   let iconBgTpye = segment.workoutType == "swimming" ? "blue-bg" : "green-bg"
-  let iconSrc = segment.workoutType == "swimming" ? "images/simmingIcon.png" : "images/runIcon.png"
+  let iconSrc = segment.workoutType == "swimming" ? "images/swimIcon.svg" : "images/runIcon.svg"
   let iconAltText = segment.workoutType == "swimming" ? "swimming icon" : "running icon"
   let statColor = segment.workoutType == "swimming" ? "blue" : "green"
   let startTime = new Date(segment.startTime)
@@ -377,14 +399,38 @@ function newWorkout(key, value) {
 }
 
 function saveNewWorkout() {
-  if (app.$.newWorkoutStatBox.value == "" || app.$.newWorkoutDateBox.value == "" || app.$.newWorkoutStartTimeBox.value == "" || app.$.newWorkoutEndTimeBox.value == "" || app.state.newWourkout.startTime > app.state.newWourkout.endTime) {
+  console.log(app.state.newWourkout)
+  if (app.state.newWourkout.swimming == "" || app.state.newWourkout.stat == "" || app.state.newWourkout.date == 0 || app.state.newWourkout.startTime == 0 || app.state.newWourkout.endTime == 0 || app.state.newWourkout.startTime > app.state.newWourkout.endTime) {
+    if (app.$.newWorkoutStatBox.value == "") {
+      console.error(app.$.newWorkoutStatBox)
+      console.error("The above element is empty")
+    }
+    if (app.$.newWorkoutDateBox.value == "") {
+      console.error(app.$.newWorkoutDateBox)
+      console.error("The above element is empty")
+    }
+    if (app.$.newWorkoutStartTimeBox.value == "") {
+      console.error(app.$.newWorkoutStartTimeBox)
+      console.error("The above element is empty")
+    }
+    if (app.$.newWorkoutEndTimeBox.value == "") {
+      console.error(app.$.state.newWorkoutEndTimeBox)
+      console.error("The above element is empty")
+    }
+    if (app.state.newWourkout.startTime == "") {
+      console.error(app.state.newWourkout.startTime)
+      console.error("The above element is empty")
+    }
+    if (app.state.newWourkout.endTime == "") {
+      console.error(app.state.newWourkout.endTime)
+      console.error("The above element is empty")
+    }
     console.log("should return")
     return false
   }
   let newWorkout = app.state.newWourkout
   let localStorageWorkouts = window.localStorage.getItem("workouts")
   localStorageWorkouts = JSON.parse(localStorageWorkouts)
-  console.log(localStorageWorkouts)
   let currentSession = localStorageWorkouts.find(obj => {
     console.log("finding")
     return obj.date == newWorkout.date
@@ -399,20 +445,28 @@ function saveNewWorkout() {
     localStorageWorkouts.sort((a, b) => a.date - b.date)
   } else {
     console.log("found")
-    console.log(currentSession)
     currentSession.segments.push(newWorkout)
-    console.log(currentSession)
   }
-  console.log(localStorageWorkouts)
   localStorageWorkouts = JSON.stringify(localStorageWorkouts)
   window.localStorage.setItem("workouts", localStorageWorkouts)
-  app.state.newWourkout = {}
+  app.state.newWourkout = {
+    workoutType: "",
+    activityType: "",
+    stat: "",
+    date: 0,
+    startTime: 0,
+    endTime: 0
+  }
   app.$.workoutTypeSwimmingBtn.classList.remove("selected")
   app.$.workoutTypeTerrainBtn.classList.remove("selected")
   app.$.activityTypeRunningBtn.classList.remove("selected")
   app.$.activityTypeStrengthBtn.classList.remove("selected")
+  app.$.newWorkoutStatBox.value = ""
+  app.$.newWorkoutDateBox.value = ""
+  app.$.newWorkoutStartTimeBox.value = ""
+  app.$.newWorkoutEndTimeBox.value = ""
   app.$.addWourkoutOverlay.classList.add("hidden")
-  loadData()
+  app.reload()
 }
 
 function greeting() {
@@ -473,7 +527,7 @@ function loadAllTimeStat() {
       app.$.allTimeStatProgressBar.setAttribute("data-label", `${precent}%`)
     }
   } else {
-    console.log(dayCounter(app.state.currentDate.getTime()))
+    //console.log(dayCounter(app.state.currentDate.getTime()))
     app.$.allTimeStatProgressBar.remove()
   }
 
