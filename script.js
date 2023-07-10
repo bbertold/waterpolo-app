@@ -54,6 +54,19 @@ const app = {
       lsUserPref = JSON.stringify(lsUserPref)
       localStorage.setItem("userPref", lsUserPref)
       greeting()
+      let nameInputParent = app.$.newNameInput.closest(".form-item")
+      let alertHtml = `
+      <div class="alert success">
+      <img src="images/checkMark.svg" alt="Check mark" />
+      <p>Mostantól ${newName} a neved</p>
+      </div>
+    `
+      nameInputParent.insertAdjacentHTML("beforeend", alertHtml)
+      setTimeout(() => {
+        let nameInputParent = app.$.newNameInput.closest(".form-item")
+        let alert = nameInputParent.querySelector(".alert")
+        alert.remove()
+      }, 3000)
     })
 
     // New workout
@@ -539,7 +552,7 @@ function loadAllTimeStat() {
   app.$.allTImeStatTimeLengthUnit.innerHTML = "óra"
 }
 
-function AddTestData(times) {
+function addTestData(times) {
   for (let index = 0; index < times; index++) {
     let localStorageWorkouts = window.localStorage.getItem("workouts")
     localStorageWorkouts = JSON.parse(localStorageWorkouts)
@@ -550,20 +563,42 @@ function AddTestData(times) {
   }
 }
 
-function dayCounter(date, outOf) {
-  let campDay = [{ "date": 1689552000000 }, { "date": 1689638400000 }, { "date": 1689724800000 }, { "date": 1689811200000 }, { "date": 1689897600000 }, { "date": 1690156800000 }, { "date": 1690243200000 }, { "date": 1690329600000 }, { "date": 1690416000000 }, { "date": 1690502400000 }, { "date": 1690761600000 }, { "date": 1690848000000 }, { "date": 1690934400000 }, { "date": 1691020800000 }, { "date": 1691107200000 }, { "date": 1691366400000 }, { "date": 1691452800000 }, { "date": 1691539200000 }, { "date": 1691625600000 }, { "date": 1691712000000 }, { "date": 1691971200000 }, { "date": 1692057600000 }, { "date": 1692144000000 }, { "date": 1692230400000 }, { "date": 1692316800000 }, { "date": 1692576000000 }, { "date": 1692662400000 }, { "date": 1692748800000 }, { "date": 1692835200000 }, { "date": 1692921600000 }, { "date": 1693180800000 }, { "date": 1693267200000 }, { "date": 1693353600000 }, { "date": 1693440000000 }]
-  let index = campDay.findIndex(day => day.date === date)
-  if (index == -1) {
-    if (outOf) {
-      return [-1, -1]
-    } else {
-      return -1
+function dayCounter(date, outOf = false) {
+  const startDate = new Date("2023-07-17");
+  const endDate = new Date("2023-09-01");
+  let dayCount = 0;
+  let currentAnalysingDate = new Date(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate());
+
+  while (currentAnalysingDate <= endDate) {
+    if (currentAnalysingDate.getDay() !== 0 && currentAnalysingDate.getDay() !== 6) {
+      dayCount++;
     }
-  } else {
-    if (outOf) {
-      return [index + 1, campDay.length]
-    } else {
-      return index + 1
+
+    const currentDateWithoutTime = new Date(currentAnalysingDate.setHours(0, 0, 0, 0));
+    const inputDateWithoutTime = new Date(Number(date)).setHours(0, 0, 0, 0);
+
+    if (currentDateWithoutTime >= inputDateWithoutTime && currentDateWithoutTime < inputDateWithoutTime + 24 * 60 * 60 * 1000) {
+      if (outOf) {
+        const oneDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+        let totalDays = 0;
+        let currentDate = new Date(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate());
+
+        while (currentDate <= endDate) {
+          if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+            totalDays++;
+          }
+
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+
+        return [dayCount, totalDays];
+      } else {
+        return dayCount;
+      }
     }
+
+    currentAnalysingDate.setUTCDate(currentAnalysingDate.getUTCDate() + 1);
   }
+
+  return -1;
 }

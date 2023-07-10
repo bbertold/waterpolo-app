@@ -457,6 +457,22 @@ nav button {
   margin-top: 3px;
 }
 
+.modal-content .alert {
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  padding: 8px;
+  gap: 4px;
+}
+
+.modal-content .alert p {
+  font-weight: bold;
+}
+
+.modal-content .alert.success {
+  background-color: #c6efce;
+}
+
 /* Spacer */
 #spacer {
   height: 30px;
@@ -512,3 +528,23 @@ nav button {
 .selected {
   border: 2px solid rgb(86, 86, 86) !important;
 }
+
+/* Media querys NOT ENABLED 
+
+@media (min-width: 700px) {
+  main {
+    display: flex;
+    flex-direction: row;
+    gap: 40px;
+  }
+
+  .all-time-stats {
+    order: 2;
+  }
+
+  .wourkouts {
+    order: 1;
+  }
+}
+
+*/

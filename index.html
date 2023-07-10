@@ -86,138 +86,135 @@
       <div class="wourkouts">
         <h2>Edzések</h2>
         <div class="session-container" data-id="sessionContainer"></div>
+        <div id="spacer">
+          <span>Csapjunk a lovak közé!</span>
+        </div>
       </div>
-      <div id="spacer">
-        <span>Csapjunk a lovak közé!</span>
+    </main>
+    <button id="floatingActionBtn" data-id="addWorkoutBtn">
+      <img src="images/plus.png" alt="Plus icon" />
+    </button>
+    <div id="add-workout" data-id="addWourkoutOverlay" class="hidden">
+      <div class="header-container">
+        <h2>Edzés hozzáadása</h2>
+        <button data-id="addWourkoutCloseBtn">
+          <img src="images/close.png" alt="x icon" />
+        </button>
       </div>
-      <button id="floatingActionBtn" data-id="addWorkoutBtn">
-        <img src="images/plus.png" alt="Plus icon" />
+      <div class="custom-form">
+        <div id="workout-type-selector" class="form-item">
+          <label>Edzés típusa</label>
+          <div class="btn-choice">
+            <button class="blue action-btn" data-id="workoutTypeSwimmingBtn">
+              <img
+                class="btn-icon"
+                src="images/swimIcon.svg"
+                alt="Swimming Icon"
+              />
+              <p>Úszás</p>
+            </button>
+            <button class="green action-btn" data-id="workoutTypeTerrainBtn">
+              <img class="btn-icon" src="images/runIcon.svg" alt="Run Icon" />
+              <p>Szárazföldi</p>
+            </button>
+          </div>
+        </div>
+        <div
+          id="activty-type-selector"
+          class="form-item"
+          data-id="activtyTpyeSelectorContainer"
+        >
+          <label>Edzés fajta</label>
+          <div class="btn-choice">
+            <button class="green action-btn" data-id="activityTypeStrengthBtn">
+              <img
+                class="btn-icon"
+                src="images/dumbellIocn.png"
+                alt="Szárazföldi"
+              />
+              <p>Szárazföldi</p>
+            </button>
+            <button class="green action-btn" data-id="activityTypeRunningBtn">
+              <img class="btn-icon" src="images/runIcon.svg" alt="Run Icon" />
+              <p>Futás</p>
+            </button>
+          </div>
+        </div>
+        <div id="stat" class="form-item">
+          <label for="new-workout-stat-box">Teljesítmény</label>
+          <div class="textbox-with-unit">
+            <input
+              type="tel"
+              name="stat"
+              data-id="newWorkoutStatBox"
+              id="new-workout-stat-box"
+            />
+            <p>m</p>
+          </div>
+        </div>
+        <div id="time-date" class="form-item">
+          <label>Időpont</label>
+          <div class="multiple-textbox">
+            <input
+              type="date"
+              name="date"
+              id="date"
+              data-id="newWorkoutDateBox"
+            />
+            <div class="combined-textbox">
+              <input
+                type="time"
+                name="startTime"
+                id="endTime"
+                data-id="newWorkoutStartTimeBox"
+              />
+              <p>-</p>
+              <input
+                type="time"
+                name="endTime"
+                id="endTime"
+                data-id="newWorkoutEndTimeBox"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <button id="add-workout-btn" data-id="addInputedWorkoutBtn">
+        <img src="images/plus.png" alt="Plus icon" class="btn-icon" />
+        <p>Hozzáadás</p>
       </button>
-      <div id="add-workout" data-id="addWourkoutOverlay" class="hidden">
+    </div>
+    <div class="modal-background hidden" data-id="settingsModal">
+      <div class="modal-content">
         <div class="header-container">
-          <h2>Edzés hozzáadása</h2>
-          <button data-id="addWourkoutCloseBtn">
+          <h2>Beállítások</h2>
+          <button data-id="settingsModalCloseBtn">
             <img src="images/close.png" alt="x icon" />
           </button>
         </div>
         <div class="custom-form">
-          <div id="workout-type-selector" class="form-item">
-            <label>Edzés típusa</label>
+          <div class="form-item">
+            <p>Adatok</p>
             <div class="btn-choice">
-              <button class="blue action-btn" data-id="workoutTypeSwimmingBtn">
-                <img
-                  class="btn-icon"
-                  src="images/swimIcon.svg"
-                  alt="Swimming Icon"
-                />
-                <p>Úszás</p>
+              <button class="action-btn" data-id="settingsImportDataBtn">
+                Importálás
               </button>
-              <button class="green action-btn" data-id="workoutTypeTerrainBtn">
-                <img class="btn-icon" src="images/runIcon.svg" alt="Run Icon" />
-                <p>Szárazföldi</p>
+              <button class="action-btn" data-id="settingsExportDataBtn">
+                Exportálás
               </button>
             </div>
           </div>
-          <div
-            id="activty-type-selector"
-            class="form-item"
-            data-id="activtyTpyeSelectorContainer"
-          >
-            <label>Edzés fajta</label>
-            <div class="btn-choice">
-              <button
-                class="green action-btn"
-                data-id="activityTypeStrengthBtn"
-              >
-                <img
-                  class="btn-icon"
-                  src="images/dumbellIocn.png"
-                  alt="Szárazföldi"
-                />
-                <p>Szárazföldi</p>
-              </button>
-              <button class="green action-btn" data-id="activityTypeRunningBtn">
-                <img class="btn-icon" src="images/runIcon.svg" alt="Run Icon" />
-                <p>Futás</p>
-              </button>
-            </div>
-          </div>
-          <div id="stat" class="form-item">
-            <label for="new-workout-stat-box">Teljesítmény</label>
+          <div class="form-item">
+            <p>Név</p>
             <div class="textbox-with-unit">
-              <input
-                type="tel"
-                name="stat"
-                data-id="newWorkoutStatBox"
-                id="new-workout-stat-box"
-              />
-              <p>m</p>
-            </div>
-          </div>
-          <div id="time-date" class="form-item">
-            <label>Időpont</label>
-            <div class="multiple-textbox">
-              <input
-                type="date"
-                name="date"
-                id="date"
-                data-id="newWorkoutDateBox"
-              />
-              <div class="combined-textbox">
-                <input
-                  type="time"
-                  name="startTime"
-                  id="endTime"
-                  data-id="newWorkoutStartTimeBox"
-                />
-                <p>-</p>
-                <input
-                  type="time"
-                  name="endTime"
-                  id="endTime"
-                  data-id="newWorkoutEndTimeBox"
-                />
-              </div>
+              <input type="text" data-id="newNameInput" />
+              <button data-id="newNameBtn">Mentés</button>
             </div>
           </div>
         </div>
-        <button id="add-workout-btn" data-id="addInputedWorkoutBtn">
-          <img src="images/plus.png" alt="Plus icon" class="btn-icon" />
-          <p>Hozzáadás</p>
-        </button>
+        <p class="version-info">Version 0.0.0 2023.06.20</p>
       </div>
-      <div class="modal-background hidden" data-id="settingsModal">
-        <div class="modal-content">
-          <div class="header-container">
-            <h2>Beállítások</h2>
-            <button data-id="settingsModalCloseBtn">
-              <img src="images/close.png" alt="x icon" />
-            </button>
-          </div>
-          <div class="custom-form">
-            <div class="form-item">
-              <p>Adatok</p>
-              <div class="btn-choice">
-                <button class="action-btn" data-id="settingsImportDataBtn">
-                  Importálás
-                </button>
-                <button class="action-btn" data-id="settingsExportDataBtn">
-                  Exportálás
-                </button>
-              </div>
-            </div>
-            <div class="form-item">
-              <p>Név</p>
-              <div class="textbox-with-unit">
-                <input type="text" data-id="newNameInput" />
-                <button data-id="newNameBtn">Mentés</button>
-              </div>
-            </div>
-          </div>
-          <p class="version-info">Version 0.0.0 2023.06.20</p>
-        </div>
-      </div>
-    </main>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>
