@@ -124,12 +124,12 @@
           class="form-item"
           data-id="activtyTpyeSelectorContainer"
         >
-          <label>Edzés fajta</label>
+          <label>Tevékenység típusa</label>
           <div class="btn-choice">
             <button class="green action-btn" data-id="activityTypeStrengthBtn">
               <img
                 class="btn-icon"
-                src="images/dumbellIocn.png"
+                src="images/dumbellIcon.png"
                 alt="Szárazföldi"
               />
               <p>Szárazföldi</p>
@@ -149,7 +149,7 @@
               data-id="newWorkoutStatBox"
               id="new-workout-stat-box"
             />
-            <p>m</p>
+            <p data-id="newWorkoutStatUnit">m</p>
           </div>
         </div>
         <div id="time-date" class="form-item">
@@ -186,15 +186,18 @@
     </div>
     <div class="modal-background hidden" data-id="settingsModal">
       <div class="modal-content">
-        <div class="header-container">
-          <h2>Beállítások</h2>
-          <button data-id="settingsModalCloseBtn">
-            <img src="images/close.png" alt="x icon" />
-          </button>
+        <div class="header">
+          <div class="header-container">
+            <h2>Beállítások</h2>
+            <button data-id="settingsModalCloseBtn">
+              <img src="images/close.png" alt="x icon" />
+            </button>
+          </div>
         </div>
+        <hr />
         <div class="custom-form">
           <div class="form-item">
-            <p>Adatok</p>
+            <h4>Adatok</h4>
             <div class="btn-choice">
               <button class="action-btn" data-id="settingsImportDataBtn">
                 Importálás
@@ -205,14 +208,21 @@
             </div>
           </div>
           <div class="form-item">
-            <p>Név</p>
+            <h4>Név</h4>
             <div class="textbox-with-unit">
               <input type="text" data-id="newNameInput" />
               <button data-id="newNameBtn">Mentés</button>
             </div>
           </div>
+          <div class="form-item">
+            <h4>Biztonsági mentés</h4>
+            <p class="secondary">
+              Biztonsági mentések autómatikusan keletkeznek új edzések
+              mentésekor, és alapértelmezetten másnapig vannak tárolva.
+            </p>
+          </div>
         </div>
-        <p class="version-info">Version 0.0.0 2023.06.20</p>
+        <p class="version-info">Version 1.0.0 || 2023.07.16</p>
       </div>
     </div>
     <script src="script.js"></script>

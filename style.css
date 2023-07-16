@@ -266,18 +266,21 @@ nav button {
 /* Header and background */
 
 #add-workout {
-  -webkit-backdrop-filter: blur(25px);
-  backdrop-filter: blur(25px);
-  border-radius: 26px 26px 0px 0px;
   padding: 15px 20px 15px 20px;
   width: 100vw;
   bottom: 0px;
-  /*border: 4px solid #84848450;*/
   position: fixed;
   left: 0;
   right: 0;
   margin: 0 auto;
-  background: rgba(255, 254, 254, 0.46);
+  /* */
+  /* From https://css.glass */
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(13.2px);
+  -webkit-backdrop-filter: blur(13.2px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .header-container h2 {
@@ -382,7 +385,7 @@ nav button {
 
 .textbox-with-unit {
   display: flex;
-  align-items: baseline;
+  align-items: end;
   gap: 5px;
 }
 
@@ -437,8 +440,6 @@ nav button {
 
 .modal-content .custom-form button {
   background-color: var(--light-grey);
-  margin-top: 2px;
-  margin-bottom: 6px;
   border: none;
   display: flex;
   justify-content: center;
@@ -448,6 +449,7 @@ nav button {
   font-weight: bold;
   color: black;
   flex-grow: 1;
+  height: 40px;
 }
 
 .version-info {
@@ -463,6 +465,7 @@ nav button {
   align-items: center;
   padding: 8px;
   gap: 4px;
+  margin: 5px 0px 15px 0px;
 }
 
 .modal-content .alert p {
@@ -471,6 +474,15 @@ nav button {
 
 .modal-content .alert.success {
   background-color: #c6efce;
+}
+
+.modal-content p.secondary {
+  color: gray;
+  font-size: 0.75rem;
+}
+
+.modal-content .form-item {
+  margin: 0px 0px 15px 0px;
 }
 
 /* Spacer */
@@ -525,8 +537,13 @@ nav button {
   display: none;
 }
 
+.disabled-btn {
+  background-color: white;
+  color: gray;
+}
+
 .selected {
-  border: 2px solid rgb(86, 86, 86) !important;
+  border: 2px solid #c7c7c7 !important;
 }
 
 /* Media querys NOT ENABLED 
