@@ -150,7 +150,7 @@ const app = {
       timeLength: 0
     },
     currentDate: new Date(),
-    codeVersion: "1.0.0"
+    codeVersion: "1.0.1"
   },
 
   init() {
@@ -416,7 +416,7 @@ function calculateSessionStat(session) {
 
 function exportData() {
   console.log("Data export init")
-  let dataToExport = JSON.stringify(localStorage.getItem("workouts"))
+  let dataToExport = localStorage.getItem("workouts")
   if (navigator.clipboard) {
     navigator.clipboard.writeText(dataToExport);
   } else {
@@ -564,22 +564,22 @@ function saveNewWorkout() {
 function workoutsBackup({ create, storeLength }, remove) {
   let now = app.state.currentDate
   let workoutsBackup = JSON.parse(localStorage.getItem("workoutsBackup"))
+  if (JSON.stringify(workoutsBackup) == "[]") {
+    console.log("No need to backup")
+    return "noNeedToBackup"
+  }
   if (create) {
-    if (workoutsBackup != "[]") {
-      console.log("Backup not succsesful, no need to back up")
-    } else {
-      let currentLocalStorageWorkouts = window.localStorage.getItem("workouts")
-      let currentBackup = {
-        created: now.getTime(),
-        expires: 0,
-        workoutsArray: currentLocalStorageWorkouts
-      }
-      let expiresDate = new Date()
-      expiresDate.setDate(now.getDate() + 1)
-      expiresDate.setHours(0, 0, 0, 0)
-      currentBackup.expires = expiresDate.getTime()
-      workoutsBackup.unshift(currentBackup)
+    let currentLocalStorageWorkouts = window.localStorage.getItem("workouts")
+    let currentBackup = {
+      created: now.getTime(),
+      expires: 0,
+      workoutsArray: currentLocalStorageWorkouts
     }
+    let expiresDate = new Date()
+    expiresDate.setDate(now.getDate() + 1)
+    expiresDate.setHours(0, 0, 0, 0)
+    currentBackup.expires = expiresDate.getTime()
+    workoutsBackup.unshift(currentBackup)
   }
   if (remove) {
     let currentDate = new Date(now)
@@ -667,8 +667,7 @@ function loadAllTimeStat() {
 
 function addTestData(times) {
   for (let index = 0; index < times; index++) {
-    let localStorageWorkouts = window.localStorage.getItem("workouts")
-    localStorageWorkouts = JSON.parse(localStorageWorkouts)
+    let localStorageWorkouts = JSON.parse(window.localStorage.getItem("workouts"))
     let newSession = JSON.parse(`{ "date": 1687392000000, "segments": [{ "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687417200000, "endTime": 1687420800000 }, { "workoutType": "terrain", "activityType": "strength", "stat": "2500", "date": 1687392000000, "startTime": 1687420800000, "endTime": 1687424400000 }, { "workoutType": "terrain", "activityType": "running", "stat": "5000", "date": 1687392000000, "startTime": 1687424400000, "endTime": 1687384800000 }, { "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687431600000, "endTime": 1687438800000 }]}`)
     localStorageWorkouts.unshift(newSession)
     localStorageWorkouts = JSON.stringify(localStorageWorkouts)
