@@ -150,7 +150,7 @@ const app = {
       timeLength: 0
     },
     currentDate: new Date(),
-    codeVersion: "1.0.1"
+    codeVersion: "1.0.2"
   },
 
   init() {
@@ -343,24 +343,35 @@ function sessionDate(sessionDate) {
 }
 
 function generateSegmentHtml(segment) {
-  let icon = {
-    src: "",
-    altText: "",
-    bgType: ""
+  let startTime = new Date(segment.startTime)
+  let endTime = new Date(segment.endTime)
+  let display = {
+    segment: segment.workoutType == "swimming" ? "Vízi edzés" : "Szárazföldi",
+    statColor: segment.workoutType == "swimming" ? "blue" : "green",
+    startTimeHour: String(startTime.getHours()).padStart(2, '0'),
+    startTimeMinute: String(startTime.getMinutes()).padStart(2, '0'),
+    endTimeHour: String(endTime.getHours()).padStart(2, '0'),
+    endTimeMinute: String(endTime.getMinutes()).padStart(2, '0'),
+    icon: {
+      src: "",
+      altText: "",
+      bgType: ""
+    }
   }
+
   if (segment.workoutType == "swimming") {
-    icon.src = "images/swimIcon.svg"
-    icon.altText = "swimming icon"
-    icon.bgType = "blue-bg"
+    display.icon.src = "images/swimIcon.svg"
+    display.icon.altText = "swimming icon"
+    display.icon.bgType = "blue-bg"
   } else if (segment.workoutType == "terrain") {
     if (segment.activityType == "running") {
-      icon.src = "images/runIcon.svg"
-      icon.altText = "Run icon"
-      icon.bgType = "green-bg"
+      display.icon.src = "images/runIcon.svg"
+      display.icon.altText = "Run icon"
+      display.icon.bgType = "green-bg"
     } else if (segment.activityType = "strength") {
-      icon.src = "images/dumbellIcon.png"
-      icon.altText = "Dumbell icon"
-      icon.bgType = "green-bg"
+      display.icon.src = "images/dumbellIcon.png"
+      display.icon.altText = "Dumbell icon"
+      display.icon.bgType = "green-bg"
     }
   }
   let displayUnit = ""
@@ -371,18 +382,16 @@ function generateSegmentHtml(segment) {
       break
   }
   let statColor = segment.workoutType == "swimming" ? "blue" : "green"
-  let startTime = new Date(segment.startTime)
-  let endTime = new Date(segment.endTime)
   return `<div class="segment">
   <div class="segment-left">
-    <img class="segment-icon ${icon.bgType}" src="${icon.src}" alt="${icon.altText}">
+    <img class="segment-icon ${display.icon.bgType}" src="${display.icon.src}" alt="${display.icon.altText}">
     <div class="segment-info">
       <p class="segment-tpye">${segment.workoutType == "swimming" ? "Úszás" : "Szárazföldi"}</p>
       <p class="segment-number ${statColor}">${segment.stat}${displayUnit}</p>
     </div>
   </div>
   <div class="segment-right">
-    <p class="time">${String(startTime.getHours()).padStart(2, '0')}:${String(startTime.getMinutes()).padStart(2, '0')}-${String(endTime.getHours()).padStart(2, '0')}:${String(endTime.getMinutes()).padStart(2, '0')}</p >
+    <p class="time">${display.startTimeHour}:${display.startTimeMinute}-${display.endTimeHour}:${display.endTimeMinute}</p >
   </div>
 </div > `
 }
