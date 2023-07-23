@@ -11,6 +11,10 @@
       href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap"
       rel="stylesheet"
     />
+    <script
+      src="https://kit.fontawesome.com/a32114dd3b.js"
+      crossorigin="anonymous"
+    ></script>
     <title>Vizilabda Alkalmazás</title>
   </head>
   <body>
@@ -186,43 +190,53 @@
     </div>
     <div class="modal-background hidden" data-id="settingsModal">
       <div class="modal-content">
-        <div class="header">
-          <div class="header-container">
-            <h2>Beállítások</h2>
-            <button data-id="settingsModalCloseBtn">
-              <img src="images/close.png" alt="x icon" />
-            </button>
-          </div>
-        </div>
-        <hr />
-        <div class="custom-form">
-          <div class="form-item">
-            <h4>Adatok</h4>
-            <div class="btn-choice">
-              <button class="action-btn" data-id="settingsImportDataBtn">
-                Importálás
-              </button>
-              <button class="action-btn" data-id="settingsExportDataBtn">
-                Exportálás
+        <div class="settings-container">
+          <div class="header">
+            <div class="header-container">
+              <h2>Beállítások</h2>
+              <button data-id="settingsModalCloseBtn">
+                <img src="images/close.png" alt="x icon" />
               </button>
             </div>
           </div>
-          <div class="form-item">
-            <h4>Név</h4>
-            <div class="textbox-with-unit">
-              <input type="text" data-id="newNameInput" />
-              <button data-id="newNameBtn">Mentés</button>
+          <div class="component">
+            <div class="setting">
+              <p>Importálás</p>
+              <div class="options">
+                <button data-id="settingsImportDataBtn">
+                  <i class="fa-solid fa-paste"></i>
+                </button>
+                <button class="disabled-btn">
+                  <i class="fa-solid fa-file-arrow-up"></i>
+                </button>
+              </div>
+            </div>
+            <hr />
+            <div class="setting">
+              <p>Exportálás</p>
+              <div class="options">
+                <button data-id="settingsExportDataBtn">
+                  <i class="fa-solid fa-copy"></i>
+                </button>
+                <button class="disabled-btn">
+                  <i class="fa-solid fa-file-arrow-down"></i>
+                </button>
+              </div>
             </div>
           </div>
-          <div class="form-item">
-            <h4>Biztonsági mentés</h4>
-            <p class="secondary">
-              Biztonsági mentések autómatikusan keletkeznek új edzések
-              mentésekor, és alapértelmezetten másnapig vannak tárolva.
-            </p>
+          <div class="component">
+            <div class="setting">
+              <p>Név</p>
+              <div class="options">
+                <input type="text" data-id="newNameInput" />
+                <button data-id="newNameBtn">
+                  <i class="fa-solid fa-check"></i>
+                </button>
+              </div>
+            </div>
           </div>
+          <p class="version-info">Version 1.1.0 || 2023.07.23</p>
         </div>
-        <p class="version-info">Version 1.0.2 || 2023.07.18</p>
       </div>
     </div>
     <script src="script.js"></script>

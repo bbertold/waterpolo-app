@@ -37,6 +37,12 @@ const app = {
   registerEventListener() {
     //settings
     app.$.settingsOpenBtn.addEventListener("click", () => {
+      let lsUserPref = JSON.parse(localStorage.getItem("userPref"))
+      let lsName = lsUserPref.name
+      if (lsName == undefined) {
+        lsName = ""
+      }
+      app.$.newNameInput.value = lsName
       app.$.settingsModal.classList.remove("hidden")
     })
 
@@ -55,17 +61,17 @@ const app = {
       lsUserPref = JSON.stringify(lsUserPref)
       localStorage.setItem("userPref", lsUserPref)
       greeting()
-      let nameInputParent = app.$.newNameInput.closest(".form-item")
+      let nameInputParent = app.$.newNameInput.closest(".component")
       let alertHtml = `
       <div class="alert success">
       <img src="images/checkMark.svg" alt="Check mark" />
       <p>Mostantól ${newName} a neved</p>
       </div>
     `
-      nameInputParent.insertAdjacentHTML("beforeend", alertHtml)
+      nameInputParent.insertAdjacentHTML("afterend", alertHtml)
       setTimeout(() => {
         let nameInputParent = app.$.newNameInput.closest(".form-item")
-        let alert = nameInputParent.querySelector(".alert")
+        let alert = document.querySelector("div.alert")
         alert.remove()
       }, 3000)
     })
@@ -94,7 +100,7 @@ const app = {
       app.$.workoutTypeSwimmingBtn.classList.add("selected")
       app.$.activtyTpyeSelectorContainer.classList.add("hidden")
       delete app.state.newWourkout.activityType
-      newWorkout("workoutType", "swimming")
+      newWorkout("workoutType", "water")
     })
     app.$.workoutTypeTerrainBtn.addEventListener("click", () => {
       app.$.workoutTypeSwimmingBtn.classList.remove("selected")
@@ -150,7 +156,7 @@ const app = {
       timeLength: 0
     },
     currentDate: new Date(),
-    codeVersion: "1.0.2"
+    codeVersion: "1.1.0"
   },
 
   init() {
@@ -165,6 +171,7 @@ const app = {
       if (lastSeenVersion != app.state.codeVersion) {
         console.log("new code version detected")
         workoutsBackup({ create: true, storeLength: 0 }, false)
+        migrateToVersion(lastSeenVersion)
         lsUserPref.codeVersion = app.state.codeVersion
         lsUserPref = JSON.stringify(lsUserPref)
         localStorage.setItem("userPref", lsUserPref)
@@ -346,8 +353,8 @@ function generateSegmentHtml(segment) {
   let startTime = new Date(segment.startTime)
   let endTime = new Date(segment.endTime)
   let display = {
-    segment: segment.workoutType == "swimming" ? "Vízi edzés" : "Szárazföldi",
-    statColor: segment.workoutType == "swimming" ? "blue" : "green",
+    segment: segment.workoutType == "water" ? "Vízi edzés" : "Szárazföldi",
+    statColor: segment.workoutType == "water" ? "blue" : "green",
     startTimeHour: String(startTime.getHours()).padStart(2, '0'),
     startTimeMinute: String(startTime.getMinutes()).padStart(2, '0'),
     endTimeHour: String(endTime.getHours()).padStart(2, '0'),
@@ -359,21 +366,27 @@ function generateSegmentHtml(segment) {
     }
   }
 
-  if (segment.workoutType == "swimming") {
-    display.icon.src = "images/swimIcon.svg"
-    display.icon.altText = "swimming icon"
-    display.icon.bgType = "blue-bg"
-  } else if (segment.workoutType == "terrain") {
-    if (segment.activityType == "running") {
+  switch (segment.activityType) {
+    case "swim":
+      display.icon.src = "images/swimIcon.svg"
+      display.icon.altText = "swimming icon"
+      display.icon.bgType = "blue-bg"
+      break
+    case "running":
       display.icon.src = "images/runIcon.svg"
       display.icon.altText = "Run icon"
       display.icon.bgType = "green-bg"
-    } else if (segment.activityType = "strength") {
+      break
+    case "strength":
       display.icon.src = "images/dumbellIcon.png"
       display.icon.altText = "Dumbell icon"
       display.icon.bgType = "green-bg"
-    }
+      break
+    default:
+      display.icon.altText = "Not defined"
+      display.icon.bgType = "gray-bg"
   }
+
   let displayUnit = ""
   switch (segment.statUnit) {
     case "meter": displayUnit = "m"
@@ -381,7 +394,7 @@ function generateSegmentHtml(segment) {
     case "quantity": displayUnit = "db"
       break
   }
-  let statColor = segment.workoutType == "swimming" ? "blue" : "green"
+  let statColor = segment.workoutType == "water" ? "blue" : "green"
   return `<div class="segment">
   <div class="segment-left">
     <img class="segment-icon ${display.icon.bgType}" src="${display.icon.src}" alt="${display.icon.altText}">
@@ -405,15 +418,15 @@ function calculateSessionStat(session) {
   }
   session.segments.forEach(segment => {
     segment.stat = Number(segment.stat)
-    switch (segment.workoutType) {
-      case "swimming":
+    switch (segment.activityType) {
+      case "swim":
         sessionStat.swimming = sessionStat.swimming + segment.stat
         break
-      case "terrain": if (segment.activityType == "running") {
+      case "running":
         sessionStat.running = sessionStat.running + segment.stat
-      } else if (segment.activityType == "strength") {
+        break
+      case "strength":
         sessionStat.strength = sessionStat.strength + segment.stat
-      }
         break
     }
     let segmentLength = Math.abs(segment.endTime - segment.startTime)
@@ -447,8 +460,9 @@ function importData() {
 
 function newWorkout(key, value) {
   switch (key) {
-    case "workoutType": if (value == "swimming") {
-      app.state.newWourkout.workoutType = "swimming"
+    case "workoutType": if (value == "water") {
+      app.state.newWourkout.workoutType = "water"
+      app.state.newWourkout.activityType = "swim"
       app.state.newWourkout.statUnit = "meter"
       break;
     } else if (value == "terrain") {
@@ -722,4 +736,20 @@ function dayCounter(date, outOf = false) {
   }
 
   return -1;
+}
+
+function migrateToVersion(lastVisitedVersion) {
+  if (lastVisitedVersion == "1.0.2") {
+    let localStorageWorkouts = JSON.parse(localStorage.getItem("workouts"))
+    localStorageWorkouts.forEach(session => {
+      session.segments.forEach(segment => {
+        if (segment.workoutType == "swimming") {
+          segment.activityType = "swim"
+          segment.workoutType = "water"
+        }
+      })
+    })
+    console.log(localStorageWorkouts)
+    localStorage.setItem("workouts", JSON.stringify(localStorageWorkouts))
+  }
 }
