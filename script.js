@@ -18,7 +18,7 @@ const app = {
     settingsOpenBtn: document.querySelector('[data-id="settingsOpenBtn"]'),
     settingsModal: document.querySelector('[data-id="settingsModal"]'),
     settingsModalCloseBtn: document.querySelector('[data-id="settingsModalCloseBtn"]'),
-    settingsImportDataBtn: document.querySelector('[data-id="settingsImportDataBtn"]'),
+    settingsImportClipboard: document.querySelector('[data-id="settingsImportClipboard"]'),
     settingsExportDataBtn: document.querySelector('[data-id="settingsExportDataBtn"]'),
     sessionContainer: document.querySelector('[data-id="sessionContainer"]'),
     welcomeText: document.querySelector('[data-id="welcomeText"]'),
@@ -31,7 +31,8 @@ const app = {
     allTimeStatTimeLength: document.querySelector('[data-id="allTimeStatTimeLength"]'),
     allTImeStatTimeLengthUnit: document.querySelector('[data-id="allTImeStatTimeLengthUnit"]'),
     allTimeStatProgressBar: document.querySelector('[data-id="allTimeStatProgressBar"]'),
-    navCurrentDate: document.querySelector('[data-id="navCurrentDate"]')
+    navCurrentDate: document.querySelector('[data-id="navCurrentDate"]'),
+    settingsImportFile: document.querySelector('[data-id="settingsImportFile"]')
   },
 
   registerEventListener() {
@@ -50,7 +51,7 @@ const app = {
       app.$.settingsModal.classList.add("hidden")
     })
 
-    app.$.settingsImportDataBtn.addEventListener("click", () => importData())
+    app.$.settingsImportClipboard.addEventListener("click", () => importData(clipboard))
 
     app.$.settingsExportDataBtn.addEventListener("click", () => exportData())
 
@@ -156,7 +157,7 @@ const app = {
       timeLength: 0
     },
     currentDate: new Date(),
-    codeVersion: "1.1.0"
+    codeVersion: "1.1.1"
   },
 
   init() {
@@ -452,10 +453,13 @@ function exportData() {
 
 }
 
-function importData() {
-  let inputData = prompt("Paste data", '[]')
+function importData(origin) {
+  let inputedJson = ""
+  if (origin = "clipboard") {
+    inputedJson = prompt("Paste data", '[]')
+  }
   workoutsBackup({ create: true, storeLength: 0 }, false)
-  localStorage.setItem("workouts", inputData)
+  localStorage.setItem("workouts", inputedJson)
 }
 
 function newWorkout(key, value) {
@@ -662,10 +666,10 @@ function greeting() {
 }
 
 function loadAllTimeStat() {
-  let timeSpent = app.state.allTimeStat.timeLength / 1000 //milliseconds -> seconds
-  let hour = Math.floor(timeSpent / 3600)
-  if (String(hour).split(".").length < 2 || String(hour).split(".")[1].length <= 2) {
-    hour = hour.toFixed(1);
+  let timeSpent = app.state.allTimeStat.timeLength / 3600000 //milliseconds -> seconds
+  console.log(timeSpent)
+  if (String(timeSpent).split(".").length < 2 || String(timeSpent).split(".")[1].length <= 2) {
+    timeSpent = timeSpent.toFixed(1);
   }
   if (dayCounter(app.state.currentDate.getTime()) != -1) {
     let currentDayCounter = dayCounter(app.state.currentDate.getTime(), true)
@@ -684,7 +688,7 @@ function loadAllTimeStat() {
   app.$.allTImeStatSwimmingUnit.innerHTML = "m"
   app.$.allTimeStatRunning.innerHTML = app.state.allTimeStat.running
   app.$.allTImeStatRunningUnit.innerHTML = "m"
-  app.$.allTimeStatTimeLength.innerHTML = hour
+  app.$.allTimeStatTimeLength.innerHTML = timeSpent
   app.$.allTImeStatTimeLengthUnit.innerHTML = "óra"
 }
 

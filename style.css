@@ -576,22 +576,29 @@ nav button {
   border: 2px solid #c7c7c7 !important;
 }
 
-/* Media querys NOT ENABLED 
+/* Media querys */
 
 @media (min-width: 700px) {
   main {
     display: flex;
     flex-direction: row;
     gap: 40px;
+    margin: 0px 50px 0px 10px;
   }
 
   .all-time-stats {
     order: 2;
+    flex-grow: 0.2;
   }
 
   .wourkouts {
+    max-width: 500px;
     order: 1;
+    flex-grow: 2;
+  }
+
+  nav {
+    justify-content: start;
+    gap: 15px;
   }
 }
-
-*/
