@@ -51,7 +51,7 @@ const app = {
       app.$.settingsModal.classList.add("hidden")
     })
 
-    app.$.settingsImportClipboard.addEventListener("click", () => importData(clipboard))
+    app.$.settingsImportClipboard.addEventListener("click", () => importData("clipboard"))
 
     app.$.settingsExportDataBtn.addEventListener("click", () => exportData())
 
@@ -157,7 +157,7 @@ const app = {
       timeLength: 0
     },
     currentDate: new Date(),
-    codeVersion: "1.1.1"
+    codeVersion: "1.1.2"
   },
 
   init() {
