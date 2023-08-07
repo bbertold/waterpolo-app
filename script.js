@@ -88,6 +88,7 @@ const app = {
     // New workout
     app.$.openNewWorkoutBtn.addEventListener("click", () => {
       app.$.newWorkoutDateBox.value = `${app.state.currentDate.getFullYear()}-${(app.state.currentDate.getMonth() + 1).toString().padStart(2, "0")}-${app.state.currentDate.getDate().toString().padStart(2, "0")}`
+      newWorkout("date", app.$.newWorkoutDateBox.value)
       app.$.addWourkoutOverlay.classList.remove("hidden")
     })
     app.$.addWourkoutCloseBtn.addEventListener("click", () => {
@@ -166,7 +167,7 @@ const app = {
       timeLength: 0
     },
     currentDate: new Date(),
-    codeVersion: "1.2.0"
+    codeVersion: "1.2.2"
   },
 
   init() {
