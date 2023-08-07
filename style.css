@@ -467,8 +467,8 @@ nav button {
   border: none;
   font-size: 1.25rem;
   border-radius: 4px;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   color: black;
 }
 
@@ -480,11 +480,27 @@ nav button {
 
 .setting input[type="text"] {
   background-color: var(--light-grey);
-  height: 40px;
+  height: 36px;
   border: none;
   border-radius: 4px;
   font-size: 1rem;
   max-width: 140px;
+}
+
+.setting .options {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.settings-container .setting .description {
+  color: gray;
+  font-weight: 400;
+  font-size: 0.85rem;
+}
+
+.settings-container .footer {
+  display: flex;
 }
 
 .version-info {
@@ -583,7 +599,7 @@ nav button {
     display: flex;
     flex-direction: row;
     gap: 40px;
-    margin: 0px 50px 0px 10px;
+    margin: 0px 50px 0px 0px;
   }
 
   .all-time-stats {

@@ -32,7 +32,10 @@ const app = {
     allTImeStatTimeLengthUnit: document.querySelector('[data-id="allTImeStatTimeLengthUnit"]'),
     allTimeStatProgressBar: document.querySelector('[data-id="allTimeStatProgressBar"]'),
     navCurrentDate: document.querySelector('[data-id="navCurrentDate"]'),
-    settingsImportFile: document.querySelector('[data-id="settingsImportFile"]')
+    settingsImportFile: document.querySelector('[data-id="settingsImportFile"]'),
+    settingsExportDataFileBtn: document.querySelector('[data-id="settingsExportDataFileBtn"]'),
+    settingBackupCounter: document.querySelector('[data-id="settingBackupCounter"]')
+
   },
 
   registerEventListener() {
@@ -44,6 +47,9 @@ const app = {
         lsName = ""
       }
       app.$.newNameInput.value = lsName
+      let lsWorkoutBackup = JSON.parse(localStorage.getItem("workoutsBackup"))
+      console.log(lsWorkoutBackup)
+      app.$.settingBackupCounter.innerHTML = lsWorkoutBackup.length
       app.$.settingsModal.classList.remove("hidden")
     })
 
@@ -53,7 +59,9 @@ const app = {
 
     app.$.settingsImportClipboard.addEventListener("click", () => importData("clipboard"))
 
-    app.$.settingsExportDataBtn.addEventListener("click", () => exportData())
+    app.$.settingsExportDataBtn.addEventListener("click", () => exportData("clipboard"))
+
+    app.$.settingsExportDataFileBtn.addEventListener("click", () => exportData("file"))
 
     app.$.newNameBtn.addEventListener("click", () => {
       let newName = app.$.newNameInput.value
@@ -79,6 +87,7 @@ const app = {
 
     // New workout
     app.$.openNewWorkoutBtn.addEventListener("click", () => {
+      app.$.newWorkoutDateBox.value = `${app.state.currentDate.getFullYear()}-${(app.state.currentDate.getMonth() + 1).toString().padStart(2, "0")}-${app.state.currentDate.getDate().toString().padStart(2, "0")}`
       app.$.addWourkoutOverlay.classList.remove("hidden")
     })
     app.$.addWourkoutCloseBtn.addEventListener("click", () => {
@@ -157,7 +166,7 @@ const app = {
       timeLength: 0
     },
     currentDate: new Date(),
-    codeVersion: "1.1.2"
+    codeVersion: "1.2.0"
   },
 
   init() {
@@ -207,8 +216,7 @@ function initLocalStorage(rewriteData, [addFirstWorkout, importWorkouts, setName
   // workouts
   if (rewriteData) {
     let workoutsArray = [];
-    JSON.parse(localStorage.getItem('workouts'))
-    localStorage.setItem('workouts', JSON.stringify(workoutsArray));
+    setLsWorkoutArray("Local storage initialiser", "Set default value", workoutsArray, true)
     // allTimeStats
     let allTimeStat = {};
     localStorage.setItem('allTimeStats', JSON.stringify(allTimeStat));
@@ -283,13 +291,13 @@ function initLocalStorage(rewriteData, [addFirstWorkout, importWorkouts, setName
 }
 
 function loadData() {
-  let workouts = JSON.parse(localStorage.getItem('workouts'))
-  if (!Array.isArray(workouts)) {
+  let lsWorkoutsArray = JSON.parse(localStorage.getItem('workouts'))
+  if (!Array.isArray(lsWorkoutsArray)) {
     console.log("Error, workouts is not an array")
     return false
   }
   app.$.sessionContainer.innerHTML = ""
-  workouts.forEach(session => {
+  for (const session of lsWorkoutsArray) {
     let sessionHtml = ""
     let sessionDateHtml = sessionDate(new Date(session.date))
 
@@ -328,7 +336,7 @@ function loadData() {
     </div>
     `
     app.$.sessionContainer.insertAdjacentHTML("afterbegin", sessionHtml)
-  })
+  }
 }
 
 function sessionDate(sessionDate) {
@@ -437,20 +445,43 @@ function calculateSessionStat(session) {
 }
 
 
-function exportData() {
+function exportData(destination) {
   console.log("Data export init")
   let dataToExport = localStorage.getItem("workouts")
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(dataToExport);
-  } else {
-    let textArea = document.createElement("textarea")
-    textArea.value = dataToExport
-    document.body.appendChild(textArea)
-    textArea.select()
-    document.execCommand("copy")
-    document.body.removeChild(textArea)
+  if (destination == "clipboard") {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(dataToExport);
+    } else {
+      let textArea = document.createElement("textarea")
+      textArea.value = dataToExport
+      document.body.appendChild(textArea)
+      textArea.select()
+      document.execCommand("copy")
+      document.body.removeChild(textArea)
+    }
+  } else if (destination == "file") {
+    const blob = new Blob([dataToExport], { type: "application/json" })
+    const anchor = document.createElement("a")
+    anchor.href = URL.createObjectURL(blob)
+    let currentDateFormated = "wpDataExport.json"
+    anchor.download = currentDateFormated
+    document.body.appendChild(anchor)
+    anchor.click()
+    document.body.removeChild(anchor)
   }
-
+  let exportParent = app.$.settingsExportDataBtn.closest(".component")
+  let alertHtml = `
+      <div class="alert success">
+      <img src="images/checkMark.svg" alt="Check mark" />
+      <p>Az exportálás kezdeményezve</p>
+      </div>
+    `
+  exportParent.insertAdjacentHTML("afterend", alertHtml)
+  setTimeout(() => {
+    let exportParent = app.$.settingsExportDataBtn.closest(".form-item")
+    let alert = document.querySelector("div.alert")
+    alert.remove()
+  }, 3000)
 }
 
 function importData(origin) {
@@ -459,7 +490,7 @@ function importData(origin) {
     inputedJson = prompt("Paste data", '[]')
   }
   workoutsBackup({ create: true, storeLength: 0 }, false)
-  localStorage.setItem("workouts", inputedJson)
+  setLsWorkoutArray("Data import", "To add the imported data", inputedJson, false)
 }
 
 function newWorkout(key, value) {
@@ -541,7 +572,7 @@ function saveNewWorkout() {
     return false
   }
   if (app.state.newWourkout.workoutType == "terrain") {
-    if (app.state.newWourkout.activityType = undefined) {
+    if (app.state.newWourkout.activityType == undefined) {
       return false
     }
   }
@@ -566,8 +597,7 @@ function saveNewWorkout() {
     console.log("found")
     currentSession.segments.push(newWorkout)
   }
-  localStorageWorkouts = JSON.stringify(localStorageWorkouts)
-  window.localStorage.setItem("workouts", localStorageWorkouts)
+  setLsWorkoutArray("Save new workout", "To add the new workout", localStorageWorkouts, true)
   app.state.newWourkout = {
     workoutType: "",
     activityType: "",
@@ -622,6 +652,18 @@ function workoutsBackup({ create, storeLength }, remove) {
   localStorage.setItem("workoutsBackup", workoutsBackup)
 }
 
+function setLsWorkoutArray(origin, reason, array, stringificationNedded) {
+  if (stringificationNedded) {
+    array = JSON.stringify(array)
+  }
+  console.log(`${origin} modified local storage beacuse ${reason}`)
+  if (array == undefined || array == null || array == "undefined" || array == "null") {
+    alert(`Local storage was about to be set to undefined or null. The process has been canceled. Its origin is the following ${origin}, and the reason is ${reason}`)
+    return
+  }
+  localStorage.setItem("workouts", array)
+}
+
 function greeting() {
   let currentHour = new Date().getHours()
   let welcomeGreetings = {
@@ -640,7 +682,7 @@ function greeting() {
   let lsUserPref = JSON.parse(localStorage.getItem("userPref"))
   let lsName = lsUserPref.name
   if (lsName != undefined) {
-    welcomeText = welcomeText + `, ${lsName}!`
+    welcomeText = welcomeText + `, ${lsName} !`
   } else {
     welcomeText = welcomeText + "!"
   }
@@ -659,15 +701,15 @@ function greeting() {
   if (dayCounterNumber < 0) {
     dayString = ""
   } else {
-    dayString = `- Nap ${dayCounterNumber}`
+    dayString = `- Nap ${dayCounterNumber} `
   }
-  let dateHtml = `${month} ${day}, ${dayName} ${dayString}`
+  let dateHtml = `${month} ${day}, ${dayName} ${dayString} `
   app.$.navCurrentDate.innerHTML = dateHtml.toUpperCase()
 }
 
 function loadAllTimeStat() {
   let timeSpent = app.state.allTimeStat.timeLength / 3600000 //milliseconds -> seconds
-  console.log(timeSpent)
+  timeSpent = Math.round(timeSpent * 100) / 100
   if (String(timeSpent).split(".").length < 2 || String(timeSpent).split(".")[1].length <= 2) {
     timeSpent = timeSpent.toFixed(1);
   }
@@ -677,7 +719,7 @@ function loadAllTimeStat() {
       let precent = currentDayCounter[0] / currentDayCounter[1]
       precent = Math.floor(precent * 100)
       app.$.allTimeStatProgressBar.style.setProperty("--width", precent)
-      app.$.allTimeStatProgressBar.setAttribute("data-label", `${precent}%`)
+      app.$.allTimeStatProgressBar.setAttribute("data-label", `${precent}% `)
     }
   } else {
     //console.log(dayCounter(app.state.currentDate.getTime()))
@@ -695,10 +737,9 @@ function loadAllTimeStat() {
 function addTestData(times) {
   for (let index = 0; index < times; index++) {
     let localStorageWorkouts = JSON.parse(window.localStorage.getItem("workouts"))
-    let newSession = JSON.parse(`{ "date": 1687392000000, "segments": [{ "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687417200000, "endTime": 1687420800000 }, { "workoutType": "terrain", "activityType": "strength", "stat": "2500", "date": 1687392000000, "startTime": 1687420800000, "endTime": 1687424400000 }, { "workoutType": "terrain", "activityType": "running", "stat": "5000", "date": 1687392000000, "startTime": 1687424400000, "endTime": 1687384800000 }, { "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687431600000, "endTime": 1687438800000 }]}`)
+    let newSession = JSON.parse(`{ "date": 1687392000000, "segments": [{ "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687417200000, "endTime": 1687420800000 }, { "workoutType": "terrain", "activityType": "strength", "stat": "2500", "date": 1687392000000, "startTime": 1687420800000, "endTime": 1687424400000 }, { "workoutType": "terrain", "activityType": "running", "stat": "5000", "date": 1687392000000, "startTime": 1687424400000, "endTime": 1687384800000 }, { "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687431600000, "endTime": 1687438800000 }] } `)
     localStorageWorkouts.unshift(newSession)
-    localStorageWorkouts = JSON.stringify(localStorageWorkouts)
-    window.localStorage.setItem("workouts", localStorageWorkouts)
+    setLsWorkoutArray("Add test data", "To add demo test data", localStorageWorkouts, true)
   }
 }
 
@@ -754,6 +795,6 @@ function migrateToVersion(lastVisitedVersion) {
       })
     })
     console.log(localStorageWorkouts)
-    localStorage.setItem("workouts", JSON.stringify(localStorageWorkouts))
+    setLsWorkoutArray("Migrating to new version", "To migrate the local storage array to a new version", localStorageWorkouts, true)
   }
 }
