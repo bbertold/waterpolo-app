@@ -543,7 +543,7 @@ function newWorkout(key, value) {
 
 function saveNewWorkout() {
   console.log(app.state.newWourkout)
-  if (app.state.newWourkout.swimming == "" || app.state.newWourkout.stat == "" || app.state.newWourkout.date == 0 || app.state.newWourkout.startTime == 0 || app.state.newWourkout.endTime == 0 || app.state.newWourkout.startTime > app.state.newWourkout.endTime) {
+  if (app.state.newWourkout.workoutType == "" || app.state.newWourkout.stat == "" || app.state.newWourkout.date == 0 || app.state.newWourkout.startTime == 0 || app.state.newWourkout.endTime == 0 || app.state.newWourkout.startTime > app.state.newWourkout.endTime) {
     if (app.$.newWorkoutStatBox.value == "") {
       console.log(app.$.newWorkoutStatBox)
       console.log("The above element is empty")
