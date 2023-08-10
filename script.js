@@ -353,7 +353,7 @@ function sessionDate(sessionDate) {
   if (dayCounterNumber < 0) {
     dayString = ""
   } else {
-    dayString = `- Nap ${dayCounterNumber}`
+    dayString = `- ${dayCounterNumber}. Nap`
   }
   let dateHtml = `${month} ${day}, ${dayName} ${dayString}`
   return dateHtml
