@@ -1,3 +1,5 @@
+import Store from "./store.js"
+
 const app = {
   $: {
     sessionsContainer: document.querySelector(".session-container"),
@@ -48,7 +50,6 @@ const app = {
       }
       app.$.newNameInput.value = lsName
       let lsWorkoutBackup = JSON.parse(localStorage.getItem("workoutsBackup"))
-      console.log(lsWorkoutBackup)
       app.$.settingBackupCounter.innerHTML = lsWorkoutBackup.length
       app.$.settingsModal.classList.remove("hidden")
     })
