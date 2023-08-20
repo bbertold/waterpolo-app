@@ -300,7 +300,7 @@ function loadData() {
   app.$.sessionContainer.innerHTML = ""
   for (const session of lsWorkoutsArray) {
     let sessionHtml = ""
-    let sessionDateHtml = sessionDate(new Date(session.date))
+    let sessionDateHtml = date(new Date(session.date))
 
     let segmentHtmlArray = session.segments.map(element => generateSegmentHtml(element))
     let segmentHtml = segmentHtmlArray.join("\r\n")
@@ -340,7 +340,7 @@ function loadData() {
   }
 }
 
-function sessionDate(sessionDate) {
+function date(sessionDate) {
   let monthArray = ["jan", "febr", "márc", "ápr", "máj", "jún", "júl", "aug", "szept", "okt", "nov", "dec"];
   let dayArray = ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"]
   let month = monthArray[sessionDate.getMonth()]
