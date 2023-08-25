@@ -1,0 +1,80 @@
+{
+  "dataVersion": "2.0",
+  "periods": [
+    {
+      "name": "Nyári Tábor",
+      "type": "camp",
+      "startDate": 1689544800000,
+      "endDate": 1693605599000,
+      "prefences": {
+        "doDayCouner": true
+      },
+      "sessions": [
+        {
+          "date": 1689552000000,
+          "segments": [
+            {
+              "workoutType": "water",
+              "stat": "2360",
+              "statUnit": "meter",
+              "date": 1689552000000,
+              "startTime": 1689577200000,
+              "endTime": 1689580800000,
+              "activityType": "swim"
+            },
+            {
+              "workoutType": "water",
+              "stat": "1560",
+              "date": 1689552000000,
+              "startTime": 1689591600000,
+              "endTime": 1689597000000,
+              "statUnit": "meter",
+              "activityType": "swim"
+            },
+            {
+              "workoutType": "water",
+              "stat": "920",
+              "date": 1689552000000,
+              "startTime": 1689602400000,
+              "endTime": 1689606000000,
+              "statUnit": "meter",
+              "activityType": "swim"
+            }
+          ]
+        },
+        {
+          "date": 1689638400000,
+          "segments": [
+            {
+              "workoutType": "water",
+              "stat": "1120",
+              "date": 1689638400000,
+              "startTime": 1689663600000,
+              "endTime": 1689667200000,
+              "statUnit": "meter",
+              "activityType": "swim"
+            },
+            {
+              "workoutType": "water",
+              "stat": "1560",
+              "statUnit": "meter",
+              "date": 1689638400000,
+              "startTime": 1689678000000,
+              "endTime": 1689683400000,
+              "activityType": "swim"
+            },
+            {
+              "workoutType": "water",
+              "stat": "2720",
+              "statUnit": "meter",
+              "date": 1689638400000,
+              "startTime": 1689688800000,
+              "endTime": 1689692400000,
+              "activityType": "swim"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

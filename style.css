@@ -170,6 +170,20 @@ nav button {
   margin: 8px 0px 0px 0px;
 }
 
+/* Period */
+
+.period > .period-description {
+  color: var(--grey);
+  font-size: 0.85rem;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.period > .period-description > p {
+  font-weight: bold;
+}
+
 /* Session stats */
 
 .session-stats,

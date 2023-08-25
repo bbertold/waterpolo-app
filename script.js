@@ -1,4 +1,5 @@
 import Store from "./store.js"
+import View from "./view.js"
 
 const app = {
   $: {
@@ -58,7 +59,7 @@ const app = {
       app.$.settingsModal.classList.add("hidden")
     })
 
-    app.$.settingsImportClipboard.addEventListener("click", () => importData("clipboard"))
+    app.$.settingsImportClipboard.addEventListener("click", () => store.importWorkoutData("alert"))
 
     app.$.settingsExportDataBtn.addEventListener("click", () => exportData("clipboard"))
 
@@ -189,9 +190,9 @@ const app = {
         localStorage.setItem("userPref", lsUserPref)
       }
 
-      loadData()
+      //loadData()
     }
-    loadAllTimeStat()
+    //loadAllTimeStat()
     greeting()
     let loadEnded = performance.now()
     console.info(`App initalised, took: ${loadEnded - loadStarted} milliseconds`)
@@ -205,11 +206,21 @@ const app = {
       timeLength: 0
     }
     loadData()
-    loadAllTimeStat()
+    //loadAllTimeStat()
     let reloadEnded = performance.now()
     console.log(`Reload completed, took: ${reloadEnded - reloadStarted}`)
   }
 }
+
+const store = new Store()
+const view = new View()
+
+function init() {
+  view.render(store.workoutsData, null, null)
+
+  store.addEventListener("workoutsChange", view.render(store.workoutsData, null, null))
+}
+init()
 
 // run Init()
 window.addEventListener("DOMContentLoaded", app.init())
@@ -290,160 +301,6 @@ function initLocalStorage(rewriteData, [addFirstWorkout, importWorkouts, setName
           </div>
   `
   app.$.sessionsContainer.insertAdjacentHTML("afterbegin", onboardingHtml)
-}
-
-function loadData() {
-  let lsWorkoutsArray = JSON.parse(localStorage.getItem('workouts'))
-  if (!Array.isArray(lsWorkoutsArray)) {
-    console.log("Error, workouts is not an array")
-    return false
-  }
-  app.$.sessionContainer.innerHTML = ""
-  for (const session of lsWorkoutsArray) {
-    let sessionHtml = ""
-    let sessionDateHtml = sessionDate(new Date(session.date))
-
-    let segmentHtmlArray = session.segments.map(element => generateSegmentHtml(element))
-    let segmentHtml = segmentHtmlArray.join("\r\n")
-
-    let sessionStat = calculateSessionStat(session)
-
-    app.state.allTimeStat.swimming += sessionStat.swimming
-    app.state.allTimeStat.running += sessionStat.running
-    app.state.allTimeStat.strength += sessionStat.strength
-    app.state.allTimeStat.timeLength += sessionStat.lenght
-
-    let timeSpent = sessionStat.lenght / 1000 //milliseconds -> seconds
-    let hour = Math.floor(timeSpent / 3600)
-    let minute = Math.floor((timeSpent % 3600) / 60)
-    let formatedSegmentLength = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-    sessionHtml = `
-    <div class="session">
-    <h3>${sessionDateHtml}</h3>
-    <div class="session-stats">
-                <div class="session-stat">
-                  <img class="session-stat-icon" src="images/swimIcon.svg" alt="swimming icon">
-                  <p>${sessionStat.swimming}m</p>
-                </div>
-                <div class="session-stat">
-                  <img class="session-stat-icon" src="images/runIcon.svg" alt="swimming icon">
-                  <p>${sessionStat.running}m</p>
-                </div>
-                <div class="session-stat">
-                  <img class="session-stat-icon" src="images/trophyIcon.svg" alt="swimming icon">
-                  <p>${formatedSegmentLength}</p>
-                </div>
-              </div>
-    ${segmentHtml}
-    </div>
-    `
-    app.$.sessionContainer.insertAdjacentHTML("afterbegin", sessionHtml)
-  }
-}
-
-function sessionDate(sessionDate) {
-  let monthArray = ["jan", "febr", "márc", "ápr", "máj", "jún", "júl", "aug", "szept", "okt", "nov", "dec"];
-  let dayArray = ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"]
-  let month = monthArray[sessionDate.getMonth()]
-  month = month.charAt(0).toUpperCase() + month.slice(1);
-  let day = sessionDate.getDate()
-  let dayName = dayArray[sessionDate.getDay()]
-  dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
-  let dayCounterNumber = dayCounter(sessionDate.getTime())
-  let dayString = ""
-  if (dayCounterNumber < 0) {
-    dayString = ""
-  } else {
-    dayString = `- ${dayCounterNumber}. Nap`
-  }
-  let dateHtml = `${month} ${day}, ${dayName} ${dayString}`
-  return dateHtml
-}
-
-function generateSegmentHtml(segment) {
-  let startTime = new Date(segment.startTime)
-  let endTime = new Date(segment.endTime)
-  let display = {
-    segment: segment.workoutType == "water" ? "Vízi edzés" : "Szárazföldi",
-    statColor: segment.workoutType == "water" ? "blue" : "green",
-    startTimeHour: String(startTime.getHours()).padStart(2, '0'),
-    startTimeMinute: String(startTime.getMinutes()).padStart(2, '0'),
-    endTimeHour: String(endTime.getHours()).padStart(2, '0'),
-    endTimeMinute: String(endTime.getMinutes()).padStart(2, '0'),
-    icon: {
-      src: "",
-      altText: "",
-      bgType: ""
-    }
-  }
-
-  switch (segment.activityType) {
-    case "swim":
-      display.icon.src = "images/swimIcon.svg"
-      display.icon.altText = "swimming icon"
-      display.icon.bgType = "blue-bg"
-      break
-    case "running":
-      display.icon.src = "images/runIcon.svg"
-      display.icon.altText = "Run icon"
-      display.icon.bgType = "green-bg"
-      break
-    case "strength":
-      display.icon.src = "images/dumbellIcon.png"
-      display.icon.altText = "Dumbell icon"
-      display.icon.bgType = "green-bg"
-      break
-    default:
-      display.icon.altText = "Not defined"
-      display.icon.bgType = "gray-bg"
-  }
-
-  let displayUnit = ""
-  switch (segment.statUnit) {
-    case "meter": displayUnit = "m"
-      break
-    case "quantity": displayUnit = "db"
-      break
-  }
-  let statColor = segment.workoutType == "water" ? "blue" : "green"
-  return `<div class="segment">
-  <div class="segment-left">
-    <img class="segment-icon ${display.icon.bgType}" src="${display.icon.src}" alt="${display.icon.altText}">
-    <div class="segment-info">
-      <p class="segment-tpye">${display.segment}</p>
-      <p class="segment-number ${statColor}">${segment.stat}${displayUnit}</p>
-    </div>
-  </div>
-  <div class="segment-right">
-    <p class="time">${display.startTimeHour}:${display.startTimeMinute}-${display.endTimeHour}:${display.endTimeMinute}</p >
-  </div>
-</div > `
-}
-
-function calculateSessionStat(session) {
-  let sessionStat = {
-    swimming: 0,
-    running: 0,
-    strength: 0,
-    lenght: 0
-  }
-  session.segments.forEach(segment => {
-    segment.stat = Number(segment.stat)
-    switch (segment.activityType) {
-      case "swim":
-        sessionStat.swimming = sessionStat.swimming + segment.stat
-        break
-      case "running":
-        sessionStat.running = sessionStat.running + segment.stat
-        break
-      case "strength":
-        sessionStat.strength = sessionStat.strength + segment.stat
-        break
-    }
-    let segmentLength = Math.abs(segment.endTime - segment.startTime)
-    sessionStat.lenght = sessionStat.lenght + segmentLength
-  })
-  return sessionStat
 }
 
 
@@ -582,24 +439,25 @@ function saveNewWorkout() {
   workoutsBackup({ create: true, storeLength: 0 }, true)
 
   let newWorkout = app.state.newWourkout
-  console.log(newWorkout)
-  let localStorageWorkouts = window.localStorage.getItem("workouts")
-  localStorageWorkouts = JSON.parse(localStorageWorkouts)
-  let currentSession = localStorageWorkouts.find(obj => {
-    return obj.date == newWorkout.date
-  })
-  if (currentSession == undefined) {
-    let newSession = {}
-    newSession.date = newWorkout.date
-    newSession.segments = []
-    newSession.segments.push(newWorkout)
-    localStorageWorkouts.unshift(newSession)
-    localStorageWorkouts.sort((a, b) => a.date - b.date)
-  } else {
-    console.log("found")
-    currentSession.segments.push(newWorkout)
-  }
-  setLsWorkoutArray("Save new workout", "To add the new workout", localStorageWorkouts, true)
+  console.log(`New workout is about to be saved ` + newWorkout)
+  store.saveNewWorkout(newWorkout)
+  // let localStorageWorkouts = window.localStorage.getItem("workouts")
+  // localStorageWorkouts = JSON.parse(localStorageWorkouts)
+  // let currentSession = localStorageWorkouts.find(obj => {
+  //   return obj.date == newWorkout.date
+  // })
+  // if (currentSession == undefined) {
+  //   let newSession = {}
+  //   newSession.date = newWorkout.date
+  //   newSession.segments = []
+  //   newSession.segments.push(newWorkout)
+  //   localStorageWorkouts.unshift(newSession)
+  //   localStorageWorkouts.sort((a, b) => a.date - b.date)
+  // } else {
+  //   console.log("found")
+  //   currentSession.segments.push(newWorkout)
+  // }
+  // setLsWorkoutArray("Save new workout", "To add the new workout", localStorageWorkouts, true)
   app.state.newWourkout = {
     workoutType: "",
     activityType: "",
@@ -617,7 +475,6 @@ function saveNewWorkout() {
   app.$.newWorkoutStartTimeBox.value = ""
   app.$.newWorkoutEndTimeBox.value = ""
   app.$.addWourkoutOverlay.classList.add("hidden")
-  app.reload()
 }
 
 function workoutsBackup({ create, storeLength }, remove) {

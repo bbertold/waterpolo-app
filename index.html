@@ -54,7 +54,7 @@
             </div>
             <div class="stat-data">
               <p class="stat-number" data-id="allTimeStatSwimming"></p>
-              <p class="stat-unit" data-id="allTImeStatSwimmingUnit"></p>
+              <p class="stat-unit" data-id="allTimeStatSwimmingUnit"></p>
             </div>
           </div>
           <div class="stat">
@@ -68,7 +68,7 @@
             </div>
             <div class="stat-data">
               <p class="stat-number" data-id="allTimeStatRunning"></p>
-              <p class="stat-unit" data-id="allTImeStatRunningUnit"></p>
+              <p class="stat-unit" data-id="allTimeStatRunningUnit"></p>
             </div>
           </div>
           <div class="stat">
@@ -82,14 +82,13 @@
             </div>
             <div class="stat-data">
               <p class="stat-number" data-id="allTimeStatTimeLength"></p>
-              <p class="stat-unit" data-id="allTImeStatTimeLengthUnit"></p>
+              <p class="stat-unit" data-id="allTimeStatTimeLengthUnit"></p>
             </div>
           </div>
         </div>
       </div>
       <div class="wourkouts">
-        <h2>Edzések</h2>
-        <div class="session-container" data-id="sessionContainer"></div>
+        <div class="session-container" data-id="periodContainer"></div>
         <div id="spacer">
           <span>Csapjunk a lovak közé!</span>
         </div>
@@ -201,7 +200,7 @@
           </div>
           <div class="component">
             <div class="setting">
-              <p>Importálás</p>
+              <p>Importálás (V2)</p>
               <div class="options">
                 <button data-id="settingsImportClipboard">
                   <i class="fa-solid fa-paste"></i>
@@ -213,12 +212,18 @@
             </div>
             <hr />
             <div class="setting">
-              <p>Exportálás</p>
+              <div class="information">
+                <p>Exportálás</p>
+                <p class="description">Ebben a verzióban nem elérhető.</p>
+              </div>
               <div class="options">
-                <button data-id="settingsExportDataBtn">
+                <button data-id="settingsExportDataBtn" class="disabled-btn">
                   <i class="fa-solid fa-copy"></i>
                 </button>
-                <button data-id="settingsExportDataFileBtn">
+                <button
+                  data-id="settingsExportDataFileBtn"
+                  class="disabled-btn"
+                >
                   <i class="fa-solid fa-file-arrow-down"></i>
                 </button>
               </div>
@@ -254,9 +259,7 @@
             </div>
           </div>
           <div class="footer">
-            <p class="version-info">
-              Version MigrateToMVC-1 (Based on 1.2.2) || 2023.08.07
-            </p>
+            <p class="version-info">Version 2.0 BETA (2) - 2023.08.25</p>
           </div>
         </div>
       </div>
