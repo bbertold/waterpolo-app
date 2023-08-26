@@ -180,15 +180,15 @@ const app = {
       initLocalStorage(true, [true, true, true])
     } else {
       let lsUserPref = JSON.parse(localStorage.getItem("userPref"))
-      let lastSeenVersion = lsUserPref.codeVersion
-      if (lastSeenVersion != app.state.codeVersion) {
-        console.log("new code version detected")
-        workoutsBackup({ create: true, storeLength: 0 }, false)
-        migrateToVersion(lastSeenVersion)
-        lsUserPref.codeVersion = app.state.codeVersion
-        lsUserPref = JSON.stringify(lsUserPref)
-        localStorage.setItem("userPref", lsUserPref)
-      }
+      //let lastSeenVersion = lsUserPref.codeVersion
+      // if (lastSeenVersion != app.state.codeVersion) {
+      //   console.log("new code version detected")
+      //   workoutsBackup({ create: true, storeLength: 0 }, false)
+      //   migrateToVersion(lastSeenVersion)
+      //   lsUserPref.codeVersion = app.state.codeVersion
+      //   lsUserPref = JSON.stringify(lsUserPref)
+      //   localStorage.setItem("userPref", lsUserPref)
+      // }
 
       //loadData()
     }
@@ -216,6 +216,11 @@ const store = new Store()
 const view = new View()
 
 function init() {
+  if (store.lsWorkouts == "nonInitalised") {
+    console.log("DATA NON INITALISED")
+    store.importWorkoutData()
+  }
+
   view.render(store.workoutsData, null, null)
 
   store.addEventListener("workoutsChange", view.render(store.workoutsData, null, null))

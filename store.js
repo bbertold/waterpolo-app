@@ -21,6 +21,10 @@ export default class Store extends EventTarget {
         return workoutsDataWithStats
     }
 
+    get lsWorkouts() {
+        return this.#getLsWorkouts()
+    }
+
     saveNewWorkout(newWorkout) {
         let workoutsData = this.#getLsWorkouts();
 
@@ -146,7 +150,7 @@ export default class Store extends EventTarget {
 
     #getLsWorkouts() {
         const lsWorkouts = window.localStorage.getItem("workoutsData")
-        return lsWorkouts ? JSON.parse(lsWorkouts) : window.localStorage.setItem("workoutsData", "[]")
+        return lsWorkouts ? JSON.parse(lsWorkouts) : "nonInitalised"
     }
 
     #getLsUserData() {
