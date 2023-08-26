@@ -21,6 +21,11 @@ export default class Store extends EventTarget {
         return workoutsDataWithStats
     }
 
+    get userPref() {
+        return this.#getLsUserData()
+    }
+
+    // Temporary for migrating to 2.0 betas
     get lsWorkouts() {
         return this.#getLsWorkouts()
     }
@@ -154,8 +159,8 @@ export default class Store extends EventTarget {
     }
 
     #getLsUserData() {
-        const lsUser = window.localStorage.getItem("userData")
-        return lsUser ? JSON.parse(lsUser) : window.localStorage.setItem("userData", "{}")
+        const lsUser = window.localStorage.getItem("userPref")
+        return lsUser ? JSON.parse(lsUser) : "nonInitalised"
     }
 
     #saveLsWorkouts(workoutData) {

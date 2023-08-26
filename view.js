@@ -13,12 +13,15 @@ export default class View {
         this.$.allTimeStatRunUnit = this.#qsDataId("allTimeStatRunningUnit")
         this.$.allTimeStatTimeUnit = this.#qsDataId("allTimeStatTimeLengthUnit")
         this.$.allTimeStatProgressBar = this.#qsDataId("allTimeStatProgressBar")
+        this.$.navWelcomeText = this.#qsDataId("welcomeText")
+        this.$.navCurrentDate = this.#qsDataId("navCurrentDate")
     }
 
     render(workoutsData, userData, state) {
         const periodHtml = this.#generatePeriodHtml(workoutsData.periods[0])
         this.$.periodContainer.insertAdjacentHTML("afterbegin", periodHtml)
         this.#loadAllTimeStat(workoutsData.stats, workoutsData.periods[0].counter)
+        this.#greet(userData.name)
     }
 
     #loadAllTimeStat(allTimeStat, counter) {
@@ -139,6 +142,33 @@ export default class View {
 </div > `
     }
 
+    #greet(name) {
+        let currentHour = new Date().getHours()
+        let welcomeGreetings = {
+            morning: "Jó reggelt",
+            day: "Szia",
+            evening: "Jó estét"
+        }
+        let welcomeText = ""
+        if (currentHour < 9) {
+            welcomeText = welcomeGreetings.morning
+        } else if (currentHour > 19) {
+            welcomeText = welcomeGreetings.evening
+        } else {
+            welcomeText = welcomeGreetings.day
+        }
+
+        if (name != undefined) {
+            welcomeText = welcomeText + `, ${name}!`
+        } else {
+            welcomeText = welcomeText + "!"
+        }
+        this.$.navWelcomeText.innerText = welcomeText
+
+        this.$.navCurrentDate.innerText = this.#formatToDate(new Date().getTime()).toUpperCase()
+    }
+
+    // Utility functions
 
     #formatToTime(firstEpochTime, secondEpochTime) {
         firstEpochTime = new Date(firstEpochTime)

@@ -193,7 +193,7 @@ const app = {
       //loadData()
     }
     //loadAllTimeStat()
-    greeting()
+    //greeting()
     let loadEnded = performance.now()
     console.info(`App initalised, took: ${loadEnded - loadStarted} milliseconds`)
   },
@@ -216,14 +216,14 @@ const store = new Store()
 const view = new View()
 
 function init() {
+  // Temporary for migrating to 2.0 betas
   if (store.lsWorkouts == "nonInitalised") {
-    console.log("DATA NON INITALISED")
     store.importWorkoutData()
   }
 
-  view.render(store.workoutsData, null, null)
+  view.render(store.workoutsData, store.userPref, null)
 
-  store.addEventListener("workoutsChange", view.render(store.workoutsData, null, null))
+  //store.addEventListener("workoutsChange", view.render(store.workoutsData, null, null))
 }
 init()
 
@@ -528,84 +528,7 @@ function setLsWorkoutArray(origin, reason, array, stringificationNedded) {
   localStorage.setItem("workouts", array)
 }
 
-function greeting() {
-  let currentHour = new Date().getHours()
-  let welcomeGreetings = {
-    morning: "Jó reggelt",
-    day: "Szia",
-    evening: "Jó estét"
-  }
-  let welcomeText = ""
-  if (currentHour < 9) {
-    welcomeText = welcomeGreetings.morning
-  } else if (currentHour > 19) {
-    welcomeText = welcomeGreetings.evening
-  } else {
-    welcomeText = welcomeGreetings.day
-  }
-  let lsUserPref = JSON.parse(localStorage.getItem("userPref"))
-  let lsName = lsUserPref.name
-  if (lsName != undefined) {
-    welcomeText = welcomeText + `, ${lsName} !`
-  } else {
-    welcomeText = welcomeText + "!"
-  }
-  app.$.welcomeText.innerHTML = welcomeText
 
-  let currentDate = app.state.currentDate
-  let monthArray = ["jan", "febr", "márc", "ápr", "máj", "jún", "júl", "aug", "szept", "okt", "nov", "dec"];
-  let dayArray = ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"]
-  let month = monthArray[currentDate.getMonth()]
-  month = month.charAt(0).toUpperCase() + month.slice(1);
-  let day = currentDate.getDate()
-  let dayName = dayArray[currentDate.getDay()]
-  dayName = dayName.charAt(0).toUpperCase() + dayName.slice(1);
-  let dayCounterNumber = dayCounter(currentDate.getTime())
-  let dayString = ""
-  if (dayCounterNumber < 0) {
-    dayString = ""
-  } else {
-    dayString = `- Nap ${dayCounterNumber} `
-  }
-  let dateHtml = `${month} ${day}, ${dayName} ${dayString} `
-  app.$.navCurrentDate.innerHTML = dateHtml.toUpperCase()
-}
-
-function loadAllTimeStat() {
-  let timeSpent = app.state.allTimeStat.timeLength / 3600000 //milliseconds -> seconds
-  timeSpent = Math.round(timeSpent * 100) / 100
-  if (String(timeSpent).split(".").length < 2 || String(timeSpent).split(".")[1].length <= 2) {
-    timeSpent = timeSpent.toFixed(1);
-  }
-  if (dayCounter(app.state.currentDate.getTime()) != -1) {
-    let currentDayCounter = dayCounter(app.state.currentDate.getTime(), true)
-    if (currentDayCounter[0] != -1) {
-      let precent = currentDayCounter[0] / currentDayCounter[1]
-      precent = Math.floor(precent * 100)
-      app.$.allTimeStatProgressBar.style.setProperty("--width", precent)
-      app.$.allTimeStatProgressBar.setAttribute("data-label", `${precent}% `)
-    }
-  } else {
-    //console.log(dayCounter(app.state.currentDate.getTime()))
-    app.$.allTimeStatProgressBar.remove()
-  }
-
-  app.$.allTimeStatSwimming.innerHTML = app.state.allTimeStat.swimming
-  app.$.allTImeStatSwimmingUnit.innerHTML = "m"
-  app.$.allTimeStatRunning.innerHTML = app.state.allTimeStat.running
-  app.$.allTImeStatRunningUnit.innerHTML = "m"
-  app.$.allTimeStatTimeLength.innerHTML = timeSpent
-  app.$.allTImeStatTimeLengthUnit.innerHTML = "óra"
-}
-
-function addTestData(times) {
-  for (let index = 0; index < times; index++) {
-    let localStorageWorkouts = JSON.parse(window.localStorage.getItem("workouts"))
-    let newSession = JSON.parse(`{ "date": 1687392000000, "segments": [{ "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687417200000, "endTime": 1687420800000 }, { "workoutType": "terrain", "activityType": "strength", "stat": "2500", "date": 1687392000000, "startTime": 1687420800000, "endTime": 1687424400000 }, { "workoutType": "terrain", "activityType": "running", "stat": "5000", "date": 1687392000000, "startTime": 1687424400000, "endTime": 1687384800000 }, { "workoutType": "swimming", "stat": "2500", "date": 1687392000000, "startTime": 1687431600000, "endTime": 1687438800000 }] } `)
-    localStorageWorkouts.unshift(newSession)
-    setLsWorkoutArray("Add test data", "To add demo test data", localStorageWorkouts, true)
-  }
-}
 
 function dayCounter(date, outOf = false) {
   const startDate = new Date("2023-07-17");
