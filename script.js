@@ -311,7 +311,8 @@ function initLocalStorage(rewriteData, [addFirstWorkout, importWorkouts, setName
 
 function exportData(destination) {
   console.log("Data export init")
-  let dataToExport = localStorage.getItem("workouts")
+  let dataToExport = JSON.stringify(store.lsWorkouts)
+  console.log(store.lsWorkouts)
   if (destination == "clipboard") {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(dataToExport);
@@ -463,6 +464,7 @@ function saveNewWorkout() {
   //   currentSession.segments.push(newWorkout)
   // }
   // setLsWorkoutArray("Save new workout", "To add the new workout", localStorageWorkouts, true)
+  location.reload()
   app.state.newWourkout = {
     workoutType: "",
     activityType: "",
