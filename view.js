@@ -18,9 +18,14 @@ export default class View {
     }
 
     render(workoutsData, userData, state) {
-        const periodHtml = this.#generatePeriodHtml(workoutsData.periods[0])
-        this.$.periodContainer.insertAdjacentHTML("afterbegin", periodHtml)
-        this.#loadAllTimeStat(workoutsData.stats, workoutsData.periods[0].counter)
+        let periodsArray = []
+        workoutsData.periods.forEach(period => {
+            const periodHtml = this.#generatePeriodHtml(period)
+            periodsArray.unshift(periodHtml)
+        })
+        const completePeriodsHtml = periodsArray.join("\r\n")
+        this.$.periodContainer.insertAdjacentHTML("afterbegin", completePeriodsHtml)
+        this.#loadAllTimeStat(workoutsData.periods[workoutsData.periods.length - 1].stats, workoutsData.periods[workoutsData.periods.length - 1].counter)
         this.#greet(userData.name)
     }
 

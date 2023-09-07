@@ -36,17 +36,20 @@ export default class Store extends EventTarget {
         console.log("New workout is about to be saved.")
         console.log(newWorkout)
 
-        const sessionIndex = workoutsData.periods[0].sessions.findIndex(session => session.date === newWorkout.date);
+        const latestPeriodIndex = workoutsData.periods.length - 1
+        console.log(workoutsData.periods[latestPeriodIndex])
+
+        const sessionIndex = workoutsData.periods[latestPeriodIndex].sessions.findIndex(session => session.date === newWorkout.date);
 
         if (sessionIndex !== -1) {
-            workoutsData.periods[0].sessions[sessionIndex].segments.push(newWorkout);
+            workoutsData.periods[latestPeriodIndex].sessions[sessionIndex].segments.push(newWorkout);
         } else {
             let newSession = {
                 date: newWorkout.date,
                 segments: [newWorkout]
             };
-            workoutsData.periods[0].sessions.push(newSession);
-            workoutsData.periods[0].sessions.sort((a, b) => a.date - b.date);
+            workoutsData.periods[latestPeriodIndex].sessions.push(newSession);
+            workoutsData.periods[latestPeriodIndex].sessions.sort((a, b) => a.date - b.date);
         }
 
         this.#saveLsWorkouts(workoutsData);
