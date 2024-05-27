@@ -1,7 +1,4 @@
-# waterpolo-app
+# Waterpolo App
+Note: This project is in a non-English language.
 
-[Project is non english] This is a demo project for learning code
-
-### About the project
-
-This project only uses vanilla js, css and html.
+This project was created for fun and uses vanilla JavaScript, CSS and HTML.
